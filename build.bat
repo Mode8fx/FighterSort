@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onefile --console --add-data "general.py;oneslotnamer.py;reslotter.py;reslotterGUI.py." "slot_sorter.py"
