@@ -75,17 +75,23 @@ ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
 ##################
 
 class Character:
-    def __init__(self, name, fighter_names, ui_index, ui_names=None, has_article=False, alt_names=[]):
+    def __init__(self, name, fighter_names, ui_index, ui_name=None, has_article=False, alt_names=[]):
         self.name = name
         self.fighter_names = fighter_names
         if not isinstance(self.fighter_names, list):
             self.fighter_names = [self.fighter_names]
         self.ui_index = ui_index
-        self.ui_names = ui_names
-        if self.ui_names is None:
-            self.ui_names = self.fighter_names
+        self.ui_name = ui_name
+        if self.ui_name is None:
+            self.ui_name = self.fighter_names[0]
         self.has_article = has_article
         self.alt_names = alt_names
+
+def get_char_by_index(num):
+    for char in chars:
+        if char.ui_index == num:
+            return char
+    return None
 
 chars = [
     Character("Mario", "mario", 1),
@@ -105,7 +111,7 @@ chars = [
     Character("Daisy", "daisy", 15),
     Character("Bowser", "koopa", 16),
     Character("Giga Bowser", "koopag", -1),
-    Character("Ice Climbers", ["nana", "popo"], 17, ui_names=["ice_climbers"], has_article=True),
+    Character("Ice Climbers", ["nana", "popo"], 17, ui_name="ice_climber", has_article=True),
     Character("Sheik", "sheik", 18),
     Character("Zelda", "zelda", 19),
     Character("Dr. Mario", "mariod", 20),
@@ -126,7 +132,8 @@ chars = [
     Character("Wario", "wario", 35),
     Character("Snake", "snake", 36),
     Character("Ike", "ike", 37),
-    Character("Pokemon Trainer", ["ptrainer", "ptrainer_low", "pzenigame", "pfushigisou", "plizardon"], 38, has_article=True),
+    # Character("Pokemon Trainer", ["ptrainer", "ptrainer_low", "pzenigame", "pfushigisou", "plizardon"], 38, has_article=True),
+    Character("Pokemon Trainer", "ptrainer", 38),
     Character("Squitle", "pzenigame", 39),
     Character("Ivysaur", "pfushigisou", 40),
     Character("Charizard", "plizardon", 41),
@@ -202,12 +209,12 @@ chars = [
     Character("Min Min", "tantan", 111),
     Character("Steve", "pickel", 112),
     Character("Sephiroth", "edge", 113),
-    Character("Pyra and Mythra", ["eflame", "element", "elight"], 114, ui_names=["eflame_first", "eflame_only", "elight_first", "elight_only"]),
-    # Character("Pyra and Mythra", "element", 114),
-    # Character("Pyra", "eflame_first", 115, alt_names=["eflame"]),
-    # Character("Mythra", "elight_first", 116, alt_names=["elight"]),
-    # Character("Pyra", "eflame_only", 117, alt_names=["eflame"]),
-    # Character("Mythra", "elight_only", 118, alt_names=["elight"]),
+    # Character("Pyra and Mythra", ["eflame", "element", "elight"], 114, ui_name=["eflame_first", "eflame_only", "elight_first", "elight_only"]),
+    Character("Pyra and Mythra", "element", 114),
+    Character("Pyra", "eflame_first", 115, ui_name="eflame"),
+    Character("Mythra", "elight_first", 116, ui_name="elight"),
+    Character("Pyra", "eflame_only", 117, ui_name="eflame"),
+    Character("Mythra", "elight_only", 118, ui_name="elight"),
     Character("Kazuya", "demon", 119),
     Character("Sora", "trail", 120)
 ]

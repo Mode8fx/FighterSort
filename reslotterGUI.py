@@ -58,11 +58,11 @@ def truncate(string,direciton=W,limit=20,ellipsis=True):
 	return text
 
 def Init(args):
-	#Check for hashes.txt
-	root.hashes= os.getcwd() +"/Hashes.txt"
+	#Check for Hashes_all.txt
+	root.hashes= os.getcwd() +"/Hashes_all.txt"
 	if (not os.path.isfile(root.hashes)):
-		messagebox.showerror(root.title(),"Hashes.txt does not exist in this directory")
-		webbrowser.open("https://github.com/ultimate-research/archive-hashes/blob/master/Hashes")
+		messagebox.showerror(root.title(),"Hashes_all.txt does not exist in this directory")
+		webbrowser.open("https://github.com/ultimate-research/archive-hashes/blob/master/Hashes_all")
 		root.destroy()
 		sys.exit("no hashes")
 
@@ -968,11 +968,11 @@ def has_non_empty_values(data):
 	return True
 
 def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_dir, share=False, new_ui_name=""):
-	# Prepare hashes.txt
-	root.hashes = os.getcwd() +"/Hashes.txt"
+	# Prepare Hashes_all.txt
+	root.hashes = os.getcwd() +"/Hashes_all.txt"
 	if (not os.path.isfile(root.hashes)):
-		messagebox.showerror(root.title(),"Hashes.txt does not exist in this directory")
-		webbrowser.open("https://github.com/ultimate-research/archive-hashes/blob/master/Hashes")
+		messagebox.showerror(root.title(),"Hashes_all.txt does not exist in this directory")
+		webbrowser.open("https://github.com/ultimate-research/archive-hashes/blob/master/Hashes_all")
 		root.destroy()
 		sys.exit("no hashes")
 

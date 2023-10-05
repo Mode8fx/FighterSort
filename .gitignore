@@ -155,3 +155,4 @@ cython_debug/
 /CSS
 /victory_template
 /virtualenv
+config.ini
