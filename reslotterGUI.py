@@ -813,8 +813,9 @@ def ReconfigAll():
 
 
 def RenameUI(targetFolder,fighter_name,newname):
-	print("New CSS name:"+newname)
-	startid = int(root.redirectStartVariable.get())
+	print("New CSS name: "+newname)
+	# startid = int(root.redirectStartVariable.get())
+	startid = int(root.new_ui_num.get())
 	folders = [targetFolder+"/ui/replace",targetFolder+"/ui/replace_patch"]
 	for folder in folders:
 		for (dirpath, dirnames, filenames) in os.walk(folder):
@@ -967,7 +968,7 @@ def has_non_empty_values(data):
 		return any(has_non_empty_values(item) for item in data)
 	return True
 
-def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_dir, share=False, new_ui_name=""):
+def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_dir, share=False, new_ui_name="", new_ui_num=0):
 	# Prepare Hashes_all.txt
 	root.hashes = os.getcwd() +"/Hashes_all.txt"
 	if (not os.path.isfile(root.hashes)):
@@ -980,7 +981,7 @@ def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_di
 	root.UIsources = [StringVar(value=val) for val in ui_sources]
 	root.UItargets = [StringVar(value=val) for val in ui_targets]
 	if share:
-		root.UIshares = [StringVar(value=val) for val in ui_sources]
+		root.UIshares = [StringVar(value=f"c{GetAssumedShareSlot(int(val.strip('c')), current_fighter):02}") for val in ui_sources]
 	else:
 		root.UIshares = [StringVar(value="")] * len(ui_sources)
 	root.currentFighter = current_fighter
@@ -991,6 +992,7 @@ def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_di
 	root.cloneCheckVariable = IntVar(value=1)
 	root.comboPRC = StringVar(value="")
 	root.redirectEntryVariable = StringVar(value=new_ui_name)
+	root.new_ui_num = StringVar(value=new_ui_num)
 
 	# Run the reslotter
 	RunReslotter(onlyConfig=False)

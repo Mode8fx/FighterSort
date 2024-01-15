@@ -10,6 +10,7 @@ import oneslotnamer
 from general import *
 
 # TODO: Slots above c07 still may be screwy... but the output is the same as ReslotterGUI? (Ice Climbers masked eyes)
+# TODO: Handle ptrainer_low
 
 # Config is initialized in general.py
 
@@ -48,14 +49,14 @@ def main(argv):
     ui_only = False
     for arg in argv:
         if arg == "-h":
-            print("usage: python slot_sorter.py <character folder>")
+            print("usage: python FighterSort.py <character folder>")
             sys.exit()
         elif arg == "-u":
             ui_only = True
         else:
             char_folder = arg.replace("/", "\\")
     if char_folder == "":
-        print("usage: python slot_sorter.py <character folder>")
+        print("usage: python FighterSort.py <character folder>")
         sys.exit()
     if not path.isdir(char_folder):
         quit_with_error("Invalid character folder.")
@@ -88,6 +89,8 @@ def main(argv):
     output_dir_root = path.join(char_folder, "output")
     if not (path.isdir(output_dir_root) or ui_only):
         os.mkdir(output_dir_root)
+    new_ui_num = 0 # for setting the UI number of new characters/echo slots
+    curr_new_ui_name = None
     # For each mod in csv...
     for i, row in enumerate(mods_info):
         # Get info about mod
@@ -116,10 +119,15 @@ def main(argv):
         # Reslot the desired mod
         if is_new_slot:
             new_ui = new_char_name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_')
+            if new_ui == curr_new_ui_name:
+                new_ui_num += 1
+            else:
+                new_ui_num = 0
+                curr_new_ui_name = new_ui
         else:
             new_ui = ""
         if not ui_only:
-            reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui) # only use the first char_id since reslotterGUI already handles characters with multiple IDs
+            reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num) # only use the first char_id since reslotterGUI already handles characters with multiple IDs
             if need_model_copy:
                 for name in char_names:
                     if not fighter_hashes:
@@ -146,6 +154,11 @@ def main(argv):
                             # print(f"Copied: {new_model_path}")
                     if num_copied > 0:
                         print(f"Copied {num_copied} missing model file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
+        original_plugin_path = path.join(mod_folder, "plugin.nro")
+        if path.isfile(original_plugin_path):
+            new_plugin_path = path.join(output_dir, "plugin.nro")
+            shutil.copy(original_plugin_path, new_plugin_path)
+            print(f"Copied plugin.nro from original {curr_alt_str}")
     if char.name == "Pokemon Trainer":
         oneslotnamer.run_with_func("ptrainer", 38, True, mods_info)
         oneslotnamer.run_with_func("pzenigame", 39, False, mods_info)
