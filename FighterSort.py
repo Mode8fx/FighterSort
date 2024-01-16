@@ -9,9 +9,6 @@ import reslotterGUI
 import oneslotnamer
 from general import *
 
-# TODO: Slots above c07 still may be screwy... but the output is the same as ReslotterGUI? (Ice Climbers masked eyes)
-# TODO: Handle ptrainer_low
-
 # Config is initialized in general.py
 
 def get_mod_folder_of_name(char, mod_name):
@@ -49,14 +46,14 @@ def main(argv):
     ui_only = False
     for arg in argv:
         if arg == "-h":
-            print("usage: python FighterSort.py <character folder>")
+            print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)")
             sys.exit()
         elif arg == "-u":
             ui_only = True
         else:
             char_folder = arg.replace("/", "\\")
     if char_folder == "":
-        print("usage: python FighterSort.py <character folder>")
+        print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)")
         sys.exit()
     if not path.isdir(char_folder):
         quit_with_error("Invalid character folder.")
@@ -129,9 +126,9 @@ def main(argv):
         if not ui_only:
             reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num) # only use the first char_id since reslotterGUI already handles characters with multiple IDs
             if need_model_copy:
+                if not fighter_hashes:
+                    populate_fighter_hashes()
                 for name in char_names:
-                    if not fighter_hashes:
-                        populate_fighter_hashes()
                     if fighter_hashes.get(name) is None:
                         continue
                     num_copied = 0
@@ -154,6 +151,24 @@ def main(argv):
                             # print(f"Copied: {new_model_path}")
                     if num_copied > 0:
                         print(f"Copied {num_copied} missing model file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
+                if "ptrainer" in char_names:
+                    old_num_copied = num_copied
+                    for sub_path in fighter_hashes["ptrainer_low"]:
+                        try:
+                            sub_path_split = sub_path.split("/")
+                            assert sub_path_split[-2] == curr_alt_str
+                        except:
+                            continue
+                        new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
+                        new_model_path = path.join(output_dir, new_sub_path)
+                        new_model_dir = path.dirname(new_model_path)
+                        if (not path.isfile(new_model_path)):
+                            original_model_path = path.join(arc_export_dir, sub_path)
+                            os.makedirs(new_model_dir, exist_ok=True)
+                            shutil.copy(original_model_path, new_model_path)
+                            num_copied += 1
+                    if num_copied > old_num_copied:
+                        print(f"Copied missing ptrainer_low from original {curr_alt_str}")
         original_plugin_path = path.join(mod_folder, "plugin.nro")
         if path.isfile(original_plugin_path):
             new_plugin_path = path.join(output_dir, "plugin.nro")
