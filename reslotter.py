@@ -1,6 +1,6 @@
 #Original code by BluJay <https://github.com/blu-dev> and Jozz <https://github.com/jozz024/ssbu-skin-reslotter>
 #Modified by Coolsonickirby to get it to work with dir addition
-#Further modified by Mips96 for automation/integration with FighterSort
+#Further modified by Mode8fx for automation/integration with FighterSort
 import os
 import shutil
 import sys

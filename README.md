@@ -70,11 +70,11 @@ The following resources were originally made by other people:
 #### reslotter.py
 - Original code by [BluJay](https://github.com/blu-dev) and [Jozz](https://github.com/jozz024/ssbu-skin-reslotter)
 - Modified by [Coolsonickirby](https://github.com/CSharpM7/reslotter) to add support for dir addition for ReslotterGUI
-- Further modified by Mips96 for automation/integration with FighterSort
+- Further modified by Mode8fx for automation/integration with FighterSort
 
 #### reslotterGUI.py
 - Original code by [Coolsonickirby](https://github.com/CSharpM7/reslotter)
-- Modified by Mips96 for automation/integration with FighterSort
+- Modified by Mode8fx for automation/integration with FighterSort
 
 #### dir_info_with_files_trimmed.json
 - Original file by [Coolsonickirby](https://github.com/CSharpM7/reslotter)

@@ -1,5 +1,5 @@
 #Original code by CSharpM7 <https://github.com/CSharpM7/reslotter>
-#Modified by Mips96 for automation/integration with FighterSort
+#Modified by Mode8fx for automation/integration with FighterSort
 import os
 import os.path
 from tkinter import *
