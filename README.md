@@ -58,7 +58,11 @@ Here's an example for Captain Falcon:
     key.csv
 ```
 
-Next, you may have noticed `key.csv`. Open the provided Google Sheets document and go to the sheet that matches your character. Fill in the info for your mod (columns F and G are determined by the other columns' values, H and I are optional, and J should be either "Echo Slot" or "New Character" if either of those is true). Finally, select columns A-J (excluding header) and copy+paste them into a file named `key.csv`. Save this CSV file in the same directory as your mods for the character in question, as shown above.
+Next, you may have noticed `key.csv`. To create this, open the provided [Google Sheets document](https://docs.google.com/spreadsheets/d/1ZDH1FBa8Ntzfb1dgiOYzQInLyNEoUdqKPVbxIft-swU), make a copy for yourself if you haven't done so already via `File -> Make a copy`, and go to the sheet that matches your character. Fill in the info for your mod (columns F and G are determined by the other columns' values, while H and I are optional). Instead of typing this info manually, you can also download [info_getter.py](https://github.com/Mode8fx/FighterSort/blob/main/oneslotnamer.py), put it in your character's directory alongside that character's mod folders, and run it; this will generate a text file that you can copy and paste into the spreadsheet.
+
+Next, fill in Column E for each mod, indicating which slot it should replace/add. Set the value to X if you want to skip this mod. Column J should be changed to either "Echo Slot" or "New Character" if either of those is true.
+
+Finally, select columns A-J (excluding header) and copy+paste them into a file named `key.csv`. Save this CSV file in the same directory as your mods for the character in question, as shown above.
 
 Now, open a command line window and navigate to the directory that contains FighterSort. Run `FighterSort.exe "CHARACTER_DIR"` (quotes included), where CHARACTER_DIR is your character mod directory (e.g. `C:/Smash Mods/[Character] Captain Falcon`). If this is your first time using FighterSort, it will ask you to select the directory of your ArcExplorer export.
 
