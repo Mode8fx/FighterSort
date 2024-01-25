@@ -17,16 +17,17 @@ Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharp
 - (Re)generate config.json for each mod
 - Edit msg_name.xmsbt to add a custom name and/or Boxing Ring title for each mod
 - Edit ui_chara_db.prcxml to change the character's number of slots
-- Handle all characters including Ice Climbers, Pokemon Trainer, and Pyra/Mythra (actually, Pyra/Mythra are still a work in progress)
+- Handle almost all characters
 
 ### What It Can't Do (for now)
 
-- Add new CSS character slots
+- Pokemon Trainer and Pyra/Mythra
+- Add new CSS character slots (it does not add character slots to the CSS, but it does copy+rename new character mods as needed (this is untested, but I think it should work))
 - Add single-slot victory themes
-- Add single-slot announcer calls
+- Add single-slot announcer calls (vc_narration_characall_SLOTNAME is added to ui_chara_db.prcxml, but you'll have to add the actual announcer call yourself; if you don't, that slot's announcer call with be silent)
 
 ### What It Will Never Do
-- Anything that doesn't involve characters (stages, etc.)
+- Anything that doesn't involve characters (e.g. stages)
 
 ## Tutorial
 
