@@ -6,7 +6,7 @@ FighterSort aims to be a quick and easy way to batch organize character mods for
 
 ## How Does It Work?
 
-Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), a spreadsheet that keeps track of your mod info, and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged. There's a decent amount of initial setup, but it's well worth it if you have a lot of mods since almost everything after this initial setup is automated for you. For more info, see the tutorial below.
+Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1ZDH1FBa8Ntzfb1dgiOYzQInLyNEoUdqKPVbxIft-swU), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged. There's a decent amount of initial setup, but it's well worth it if you have a lot of mods since almost everything after this initial setup is automated for you. For more info, see the tutorial below.
 
 ### What It Can Do
 
