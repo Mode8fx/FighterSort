@@ -1,12 +1,10 @@
 # FighterSort
 
-**[WORK IN PROGRESS]**
-
 FighterSort aims to be a quick and easy way to batch organize character mods for Super Smash Bros. Ultimate. It is intended for users who have a very large number of mods (hundreds).
 
 ## How Does It Work?
 
-Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1ZDH1FBa8Ntzfb1dgiOYzQInLyNEoUdqKPVbxIft-swU), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged. There's a decent amount of initial setup, but it's well worth it if you have a lot of mods since almost everything after this initial setup is automated for you. For more info, see the tutorial below.
+Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1HfauMP6ljZyaX7_kDSNJ-t8einsEgXg8YQGODkxP6CY), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged. There's a decent amount of initial setup, but it's well worth it if you have a lot of mods since almost everything after this initial setup is automated for you. For more info, see the tutorial below.
 
 ### What It Can Do
 
@@ -27,6 +25,7 @@ Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharp
 - Add single-slot announcer calls (vc_narration_characall_SLOTNAME is added to ui_chara_db.prcxml, but you'll have to add the actual announcer call yourself; if you don't, that slot's announcer call with be silent)
 
 ### What It Will Never Do
+- Mii Fighters
 - Anything that doesn't involve characters (e.g. stages)
 
 ## Tutorial
@@ -59,7 +58,7 @@ Here's an example for Captain Falcon:
     key.csv
 ```
 
-Next, you may have noticed `key.csv`. To create this, open the provided [Google Sheets document](https://docs.google.com/spreadsheets/d/1ZDH1FBa8Ntzfb1dgiOYzQInLyNEoUdqKPVbxIft-swU), make a copy for yourself if you haven't done so already via `File -> Make a copy`, and go to the sheet that matches your character. Fill in the info for your mod (columns F and G are determined by the other columns' values, while H and I are optional). Instead of typing this info manually, you can also download [info_getter.py](https://github.com/Mode8fx/FighterSort/blob/main/oneslotnamer.py), put it in your character's directory alongside that character's mod folders, and run it; this will generate a text file that you can copy and paste into the spreadsheet.
+Next, you may have noticed `key.csv`. To create this, open the provided [Google Sheets document](https://docs.google.com/spreadsheets/d/1HfauMP6ljZyaX7_kDSNJ-t8einsEgXg8YQGODkxP6CY), make a copy for yourself if you haven't done so already via `File -> Make a copy`, and go to the sheet that matches your character. Fill in the info for your mod (columns F and G are determined by the other columns' values, while H and I are optional). Instead of typing this info manually, you can also download [info_getter.py](https://github.com/Mode8fx/FighterSort/blob/main/oneslotnamer.py), put it in your character's directory alongside that character's mod folders, and run it; this will generate a text file that you can copy and paste into the spreadsheet.
 
 Next, fill in Column E for each mod, indicating which slot it should replace/add. Set the value to X if you want to skip this mod. Column J should be changed to either "Echo Slot" or "New Character" if either of those is true.
 

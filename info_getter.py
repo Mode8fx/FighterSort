@@ -1,6 +1,5 @@
 import os
 import re
-import zipfile
 from getpass import getpass
 
 # Directory containing the mod directories
