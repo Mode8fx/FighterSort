@@ -56,19 +56,19 @@ temp_msg = "Select the directory that contains your ArcExplorer export.\n\nIt sh
 temp_title = "ArcExplorer export directory"
 set_config_path_var(path_name, temp_msg, temp_title)
 
-path_name = "msg_name_xmsbt"
-temp_msg = "Select your msg_name.xmsbt file.\n\nThis file will be modified whenever a mod with a custom name or Boxing Ring title is sorted."
-temp_title = "msg_name.xmsbt"
-set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("XMSBT Files", "*.xmsbt")])
+# path_name = "msg_name_xmsbt"
+# temp_msg = "Select your msg_name.xmsbt file.\n\nThis file will be modified whenever a mod with a custom name or Boxing Ring title is sorted."
+# temp_title = "msg_name.xmsbt"
+# set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("XMSBT Files", "*.xmsbt")])
 
-path_name = "ui_chara_db_prcxml"
-temp_msg = "Select your ui_chara_db.prcxml file.\n\nThis file will keep track of how many slots each fighter has."
-temp_title = "ui_chara_db.prcxml"
-set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
+# path_name = "ui_chara_db_prcxml"
+# temp_msg = "Select your ui_chara_db.prcxml file.\n\nThis file will keep track of how many slots each fighter has."
+# temp_title = "ui_chara_db.prcxml"
+# set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
 
 arc_export_dir = config["Paths"]["arc_export_dir"]
-msg_name_xmsbt = config["Paths"]["msg_name_xmsbt"]
-ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
+# msg_name_xmsbt = config["Paths"]["msg_name_xmsbt"]
+# ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
 
 ##################
 # Character Info #

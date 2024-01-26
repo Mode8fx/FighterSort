@@ -28,15 +28,16 @@ def run_with_cmd(argv):
     global ui_index
     global has_article
     global key_csv
+    global char_folder
     verbose = False
     ui_name = None
     ui_index = None
     has_article = False
     key_csv = None
-    opts, args = getopt.getopt(argv,"hvn:i:ak:",["name=", "index=", "key="])
+    opts, args = getopt.getopt(argv,"hvn:i:ak:",["name=", "index=", "key=", "charfolder="])
     for opt, arg in opts:
         if opt == "-h":
-            print("usage: python oneslotnamer.py --name <character id> --index <character index> --key <key.csv>")
+            print("usage: python oneslotnamer.py --name <character id> --index <character index> --key <key.csv> --charfolder <character folder path>")
             sys.exit()
         elif opt == "-v":
             verbose = True
@@ -48,6 +49,8 @@ def run_with_cmd(argv):
             has_article = True
         elif opt in ("-k", "--key"):
             key_csv = arg
+        elif opt in ("-c", "--charfolder"):
+            char_folder = arg
     try:
         if ui_name is None:
             ui_name = args[0]
@@ -62,17 +65,19 @@ def run_with_cmd(argv):
     result = verify_and_run()
     return result
 
-def run_with_func(_ui_name, _ui_index, _has_article, _key_csv, _verbose=False):
+def run_with_func(_ui_name, _ui_index, _has_article, _key_csv, _char_folder, _verbose=False):
     global verbose
     global ui_name
     global ui_index
     global has_article
     global key_csv
+    global char_folder
     verbose = _verbose
     ui_name = _ui_name
     ui_index = _ui_index
     has_article = _has_article
     key_csv = _key_csv
+    char_folder = _char_folder
     result = verify_and_run()
     return result
 
@@ -177,6 +182,13 @@ def name_slots():
     global curr_elem
     global mods_info
     # Parse msg_name.xmsbt
+    char_ui_dir = path.join(char_folder, "output", "["+path.basename(char_folder).replace("[Character] ", "")+"] One Slot Names", "ui", "message")
+    os.makedirs(char_ui_dir, exist_ok=True)
+    msg_name_xmsbt = path.join(char_ui_dir, "msg_name.xmsbt")
+    if not path.isfile(msg_name_xmsbt):
+        with open(msg_name_xmsbt, 'wb') as file:
+            xml_boilerplate = '''<?xml version="1.0" encoding="utf-16"?>\n<xmsbt>\n</xmsbt>'''
+            file.write(xml_boilerplate.encode("utf-16"))
     xmsbt_tree = ET.parse(msg_name_xmsbt)
     xmsbt_root = xmsbt_tree.getroot()
     # Parse ui_chara_db.prcxml
@@ -197,9 +209,9 @@ def name_slots():
     # Prepare prcxml element
     # prcxml_new_struct = create_elem(None, "struct", "index", str(ui_index))
     # Number of colors
-    prcxml_color_num_elem = ET.SubElement(curr_elem, "byte")
-    prcxml_color_num_elem.set("hash", "color_num")
-    prcxml_color_num_elem.text = "8"
+    # prcxml_color_num_elem = ET.SubElement(curr_elem, "byte")
+    # prcxml_color_num_elem.set("hash", "color_num")
+    # prcxml_color_num_elem.text = "8"
     # For each mod in csv...
     # TODO: handle trainer and pyra/mythra
     for row in mods_info:
@@ -224,8 +236,8 @@ def name_slots():
         if is_new_slot:
             create_elem(xmsbt_new_root, "entry", "label", f"nam_chr3_00_{name}")
             create_text_elem(name.upper())
-        else:
-            prcxml_color_num_elem.text = str(max(int(prcxml_color_num_elem.text), slot + 1))
+        # else:
+        #     prcxml_color_num_elem.text = str(max(int(prcxml_color_num_elem.text), slot + 1))
         # Update prcxml
         # if name != "":
         #     create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))

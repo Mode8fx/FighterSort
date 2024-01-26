@@ -175,18 +175,18 @@ def main(argv):
             shutil.copy(original_plugin_path, new_plugin_path)
             print(f"Copied plugin.nro from original {curr_alt_str}")
     if char.name == "Pokemon Trainer":
-        oneslotnamer.run_with_func("ptrainer", 38, True, mods_info)
-        oneslotnamer.run_with_func("pzenigame", 39, False, mods_info)
-        oneslotnamer.run_with_func("pfushigisou", 40, False, mods_info)
-        oneslotnamer.run_with_func("plizardon", 41, False, mods_info)
+        oneslotnamer.run_with_func("ptrainer", 38, True, mods_info, char_folder)
+        oneslotnamer.run_with_func("pzenigame", 39, False, mods_info, char_folder)
+        oneslotnamer.run_with_func("pfushigisou", 40, False, mods_info, char_folder)
+        oneslotnamer.run_with_func("plizardon", 41, False, mods_info, char_folder)
     elif char.name == "Pyra and Mythra":
-        oneslotnamer.run_with_func("element", 114, False, mods_info)
-        oneslotnamer.run_with_func("eflame_first", 115, False, mods_info)
-        oneslotnamer.run_with_func("elight_first", 116, False, mods_info)
-        oneslotnamer.run_with_func("eflame_only", 117, False, mods_info)
-        oneslotnamer.run_with_func("elight_only", 118, False, mods_info)
+        oneslotnamer.run_with_func("element", 114, False, mods_info, char_folder)
+        oneslotnamer.run_with_func("eflame_first", 115, False, mods_info, char_folder)
+        oneslotnamer.run_with_func("elight_first", 116, False, mods_info, char_folder)
+        oneslotnamer.run_with_func("eflame_only", 117, False, mods_info, char_folder)
+        oneslotnamer.run_with_func("elight_only", 118, False, mods_info, char_folder)
     else:
-        oneslotnamer.run_with_func(char.ui_name, char.ui_index, char.has_article, mods_info)
+        oneslotnamer.run_with_func(char.ui_name, char.ui_index, char.has_article, mods_info, char_folder)
 
     print("\n\nSorting complete.")
     getpass("\nPress Enter to exit.")
