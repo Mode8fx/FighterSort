@@ -180,8 +180,8 @@ def name_slots():
     xmsbt_tree = ET.parse(msg_name_xmsbt)
     xmsbt_root = xmsbt_tree.getroot()
     # Parse ui_chara_db.prcxml
-    prcxml_tree = ET.parse(ui_chara_db_prcxml)
-    prcxml_root = prcxml_tree.getroot()
+    # prcxml_tree = ET.parse(ui_chara_db_prcxml)
+    # prcxml_root = prcxml_tree.getroot()
     # Get character key (created from spreadsheet)
     if len(mods_info) == 0:
         try:
@@ -195,7 +195,7 @@ def name_slots():
     # Prepare xmsbt element
     xmsbt_new_root = ET.Element("xmsbt")
     # Prepare prcxml element
-    prcxml_new_struct = create_elem(None, "struct", "index", str(ui_index))
+    # prcxml_new_struct = create_elem(None, "struct", "index", str(ui_index))
     # Number of colors
     prcxml_color_num_elem = ET.SubElement(curr_elem, "byte")
     prcxml_color_num_elem.set("hash", "color_num")
@@ -227,12 +227,12 @@ def name_slots():
         else:
             prcxml_color_num_elem.text = str(max(int(prcxml_color_num_elem.text), slot + 1))
         # Update prcxml
-        if name != "":
-            create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))
-            new_ui_name = name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_')
-            create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}")
-            if has_article:
-                create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_article_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}_article")
+        # if name != "":
+        #     create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))
+        #     new_ui_name = name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_')
+        #     create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}")
+        #     if has_article:
+        #         create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_article_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}_article")
     # Finalize files
     # Edit msg_name.xmsbt
     for entry in xmsbt_new_root.findall("entry"):
@@ -247,15 +247,15 @@ def name_slots():
         xmsbt_root.append(entry)
     ET.indent(xmsbt_tree, "  ")
     xmsbt_tree.write(msg_name_xmsbt, encoding="utf-16", xml_declaration=True)
-    # Edit ui_chara_db
-    prcxml_list_element = prcxml_root.find(".//list[@hash='db_root']")
-    prcxml_existing_struct = prcxml_root.find(f".//struct[@index='{ui_index}']")
-    if prcxml_existing_struct is not None:
-        prcxml_list_element.remove(prcxml_existing_struct)
-    prcxml_list_element.insert(0, prcxml_new_struct)
-    make_pretty(prcxml_list_element, "index")
-    ET.indent(prcxml_tree, "  ")
-    prcxml_tree.write(ui_chara_db_prcxml, encoding="utf-8", xml_declaration=True)
+    # Edit ui_chara_db.prcxml
+    # prcxml_list_element = prcxml_root.find(".//list[@hash='db_root']")
+    # prcxml_existing_struct = prcxml_root.find(f".//struct[@index='{ui_index}']")
+    # if prcxml_existing_struct is not None:
+    #     prcxml_list_element.remove(prcxml_existing_struct)
+    # prcxml_list_element.insert(0, prcxml_new_struct)
+    # make_pretty(prcxml_list_element, "index")
+    # ET.indent(prcxml_tree, "  ")
+    # prcxml_tree.write(ui_chara_db_prcxml, encoding="utf-8", xml_declaration=True)
 
 if __name__ == "__main__":
     run_with_cmd(sys.argv[1:])

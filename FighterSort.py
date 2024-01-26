@@ -46,14 +46,14 @@ def main(argv):
     ui_only = False
     for arg in argv:
         if arg == "-h":
-            print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)")
+            print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name, do not sort+copy mods)")
             sys.exit()
         elif arg == "-u":
             ui_only = True
         else:
             char_folder = arg.replace("/", "\\")
     if char_folder == "":
-        print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)")
+        print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name, do not sort+copy mods)")
         sys.exit()
     if not path.isdir(char_folder):
         quit_with_error("Invalid character folder.")
