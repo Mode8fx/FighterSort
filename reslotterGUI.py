@@ -32,18 +32,19 @@ defaultConfig['DEFAULT'] = {
 	'searchDir' : ""
 	}
 def CreateConfig():
-	print("creating valid config")
-	if (os.path.isfile(os.getcwd() + r"\config.ini")):
-		os.remove(os.getcwd() + r"\config.ini")
+	# print("creating valid config")
+	# if (os.path.isfile(os.getcwd() + r"\config.ini")):
+	# 	os.remove(os.getcwd() + r"\config.ini")
 
-	with open('config.ini', 'w+') as configfile:
-		defaultConfig.write(configfile)
-		config.read('config.ini')
+	# with open('config.ini', 'w+') as configfile:
+	# 	defaultConfig.write(configfile)
+	# 	config.read('config.ini')
+	pass
 
 #create a config if necessary
-if (not os.path.isfile(os.getcwd() + r"\config.ini")):
-	CreateConfig()
-config.read('config.ini')
+# if (not os.path.isfile(os.getcwd() + r"\config.ini")):
+# 	CreateConfig()
+# config.read('config.ini')
 
 #truncate strings for labels
 def truncate(string,direciton=W,limit=20,ellipsis=True):
@@ -73,12 +74,12 @@ def Init(args):
 		else:
 			config.set("DEFAULT","searchDir",args[1])
 			root.searchDir = args[1]
-			with open('config.ini', 'w+') as configfile:
-				config.write(configfile)
+			# with open('config.ini', 'w+') as configfile:
+			# 	config.write(configfile)
 			return
 
 	if (InitSearch(args)==False):
-		root.destroy(searchDir)
+		# root.destroy(searchDir)
 		sys.exit("exited prompt or folder does not exist")
 
 
@@ -142,8 +143,8 @@ def InitSearch(firstLoad=True):
 	root.searchDir = searchDir
 	#Write new location to config file
 	config.set("DEFAULT","searchDir",root.searchDir)
-	with open('config.ini', 'w+') as configfile:
-		config.write(configfile)
+	# with open('config.ini', 'w+') as configfile:
+	# 	config.write(configfile)
 
 def GetSlotsFromFolder(folder):
 	foundSlots = []
@@ -769,9 +770,9 @@ def RunReslotter(onlyConfig=False):
 		return
 
 	#Update config
-	if (root.currentFighter != "all"):
-		with open('config.ini', 'w+') as configfile:
-			config.write(configfile)
+	# if (root.currentFighter != "all"):
+	# 	with open('config.ini', 'w+') as configfile:
+	# 		config.write(configfile)
 
 	root.withdraw()
 	# print(targets)
@@ -950,8 +951,8 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
 	# UpdateHeader()
 
 def quit():
-	with open('config.ini', 'w+') as configfile:
-		config.write(configfile)
+	# with open('config.ini', 'w+') as configfile:
+	# 	config.write(configfile)
 		
 	root.destroy()
 	sys.exit("user exited")

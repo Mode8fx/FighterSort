@@ -44,7 +44,7 @@ def set_config_path_var(path_name, temp_msg, temp_title, filetypes=None):
             config.write(config_file)
 
 root = tk.Tk()
-root.title("Slot Sorter")
+root.title("FighterSort")
 root.withdraw()
 config = configparser.ConfigParser()
 config.read("sorter_config.ini")

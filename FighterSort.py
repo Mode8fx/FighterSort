@@ -45,16 +45,32 @@ def main(argv):
     char_folder = ""
     ui_only = False
     for arg in argv:
-        if arg == "-h":
+        if arg in ["-h", "--help"]:
             print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name, do not sort+copy mods)")
             sys.exit()
-        elif arg == "-u":
+        elif arg in ["-u", "--ui-only"]:
             ui_only = True
+        elif arg in ["-c", "--credits"]:
+            print("Fighter Sort v0.9")
+            print("\nCreated by Mode8fx")
+            print("https://github.com/Mode8fx/FighterSort")
+            print("\nOther Resources Used:")
+            print("\nreslotter.py")
+            print("Original code by BluJay and Jozz")
+            print("Modified by Coolsonickirby to add support for dir addition for ReslotterGUI")
+            print("Further modified by Mode8fx for automation/integration with FighterSort")
+            print("\nReslotterGUI")
+            print("Original code by Coolsonickirby")
+            print("Modified by Mode8fx for automation/integration with FighterSort")
+            print("\ndir_info_with_files_trimmed.json")
+            print("Original file by Coolsonickirby")
+            print("\nHashes.txt")
+            print("Original file by Smash Ultimate Research Group")
         else:
             char_folder = arg.replace("/", "\\")
     if char_folder == "":
-        print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name, do not sort+copy mods)")
-        sys.exit()
+        messagebox.showinfo(root.title(), "Select the folder containing your mods for a specific character. This folder should be named [Character], followed by the name of your character.\n\nExample: \"[Character] Toon Link\"")
+        char_folder = filedialog.askdirectory(title="Character's Mod Directory")
     if not path.isdir(char_folder):
         quit_with_error("Invalid character folder.")
     fighter_hashes = {}
@@ -102,8 +118,8 @@ def main(argv):
         need_model_copy = (not simple_config) # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
         is_extra_slot = int(target_alt) > 7
         need_share = (not simple_config) and is_extra_slot
-        new_char_name = row[7] # Slot Name (may be empty)
-        is_new_slot = (row[9] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot?
+        new_char_name = row[6] # Slot Name (may be empty)
+        is_new_slot = (row[8] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot?
         print(f"\nMod #{i+1}: {mod_name}")
         print(f"{curr_alt_str} -> {target_alt_str}")
         # Get mod directory
@@ -179,16 +195,19 @@ def main(argv):
         oneslotnamer.run_with_func("pzenigame", 39, False, mods_info, char_folder)
         oneslotnamer.run_with_func("pfushigisou", 40, False, mods_info, char_folder)
         oneslotnamer.run_with_func("plizardon", 41, False, mods_info, char_folder)
+        ui_index_string = "38 (Pokemon Trainer), 39 (Squirtle), 40 (Ivysaur), and 41 (Charizard)"
     elif char.name == "Pyra and Mythra":
         oneslotnamer.run_with_func("element", 114, False, mods_info, char_folder)
         oneslotnamer.run_with_func("eflame_first", 115, False, mods_info, char_folder)
         oneslotnamer.run_with_func("elight_first", 116, False, mods_info, char_folder)
         oneslotnamer.run_with_func("eflame_only", 117, False, mods_info, char_folder)
         oneslotnamer.run_with_func("elight_only", 118, False, mods_info, char_folder)
+        ui_index_string = "114 (Pyra and Mythra), 115 (Pyra), 116 (Mythra), 117 (Pyra only), and 118 (Mythra only)"
     else:
         oneslotnamer.run_with_func(char.ui_name, char.ui_index, char.has_article, mods_info, char_folder)
+        ui_index_string = f"{char.ui_index} ({char.ui_name})"
 
-    print("\n\nSorting complete.")
+    print("\n\nSorting complete. Don't forget to open your ui_chara_db.prcxml and change color_num as needed for struct index " + ui_index_string + ".")
     getpass("\nPress Enter to exit.")
 
 if __name__ == "__main__":

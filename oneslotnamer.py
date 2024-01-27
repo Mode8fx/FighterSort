@@ -219,10 +219,10 @@ def name_slots():
         if row[4] == "X":
             continue
         slot = int(row[4]) # Final Slot
-        name = row[7] # Slot Name (may be empty, meaning default)
+        name = row[6] # Slot Name (may be empty, meaning default)
         name = pyra_mythra_filter(ui_name, name)
-        title = row[8] # Boxing Ring Title (may be empty, meaning default)
-        is_new_slot = (row[9] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot
+        title = row[7] # Boxing Ring Title (may be empty, meaning default)
+        is_new_slot = (row[8] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot?
         # Update xmsbt
         if name != "":
             create_elem(xmsbt_new_root, "entry", "label", f"nam_chr1_{slot:02}_{ui_name}")
