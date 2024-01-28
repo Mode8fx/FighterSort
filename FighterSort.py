@@ -100,7 +100,7 @@ def main(argv):
                     mods_info.append(row[:9])
     except:
         print_key_info_and_quit()
-    output_dir_root = path.join(char_folder, "output")
+    output_dir_root = path.join(char_folder, "mods")
     if not (path.isdir(output_dir_root) or ui_only):
         os.mkdir(output_dir_root)
     new_ui_num = 0 # for setting the UI number of new characters/echo slots

@@ -87,7 +87,7 @@ Finally, go to `File -> Download -> Tab Separated Values (.tsv)`. Save this file
 ### Part 3: Running the Sorter
 Open `FighterSort.exe`. If this is your first time running it, you will be asked to point to your ArcExplorer `export` folder, along with the `ui_chara_db.prcxml` from the included `ui_chara_db` folder.
 
-You will be asked to open your character mod directory (e.g. `C:/Smash Mods/[Character] Captain Falcon`). Do that, wait a few seconds, and copy the contents of the new `output` directory to your SD card's mod directory. Make sure you also copy the newly-modified `ui_chara_db`. And that's it!
+You will be asked to open your character mod directory (e.g. `C:/Smash Mods/[Character] Captain Falcon`). Do that, wait a few seconds, and copy the new `mods` directory to your SD card's Ultimate directory at `sdmc://ultimate`. Make sure you also copy the newly-modified `ui_chara_db` into `sdmc://ultimate/mods`. And that's it!
 
 ## Credits
 The following resources were originally made by other people:

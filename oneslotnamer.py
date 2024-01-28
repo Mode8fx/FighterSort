@@ -184,7 +184,7 @@ def name_slots():
     global curr_elem
     global mods_info
     # Parse msg_name.xmsbt
-    char_ui_dir = path.join(char_folder, "output", "["+path.basename(char_folder).replace("[Character] ", "")+"] [One Slot Names]", "ui", "message")
+    char_ui_dir = path.join(char_folder, "mods", "["+path.basename(char_folder).replace("[Character] ", "")+"] [One Slot Names]", "ui", "message")
     os.makedirs(char_ui_dir, exist_ok=True)
     msg_name_xmsbt = path.join(char_ui_dir, "msg_name.xmsbt")
     if not path.isfile(msg_name_xmsbt):
