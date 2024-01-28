@@ -90,13 +90,14 @@ def main(argv):
 
     # Get character key (created from spreadsheet)
     mods_info = []
-    key_csv = path.join(char_folder, "key.csv")
+    key_csv = path.join(char_folder, "key.tsv")
     try:
         with open(key_csv) as file:
             mods_info_csv = csv.reader(file, delimiter="\t")
+            next(mods_info_csv) # skip the header row
             for row in mods_info_csv:
-                assert len(row) >= 9
-                mods_info.append(row)
+                if len(row) >= 9 and row[0] != "":
+                    mods_info.append(row[:9])
     except:
         print_key_info_and_quit()
     output_dir_root = path.join(char_folder, "output")
@@ -111,7 +112,7 @@ def main(argv):
         curr_alt = row[1] # Default Slot
         curr_alt_str = f"c{int(curr_alt):02}"
         target_alt = row[4] # Final Slot
-        if target_alt == "X":
+        if not (target_alt.isdigit() and int(target_alt) >= 0):
             continue
         target_alt_str = f"c{int(target_alt):02}"
         simple_config = row[5] == "TRUE" # Can use simple config

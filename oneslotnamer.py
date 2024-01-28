@@ -37,7 +37,7 @@ def run_with_cmd(argv):
     opts, args = getopt.getopt(argv,"hvn:i:ak:",["name=", "index=", "key=", "charfolder="])
     for opt, arg in opts:
         if opt == "-h":
-            print("usage: python oneslotnamer.py --name <character id> --index <character index> --key <key.csv> --charfolder <character folder path>")
+            print("usage: python oneslotnamer.py --name <character id> --index <character index> --key <key.tsv> --charfolder <character folder path>")
             sys.exit()
         elif opt == "-v":
             verbose = True
@@ -92,7 +92,7 @@ def verify_and_run():
             assert isinstance(key_csv, list)
             mods_info = key_csv
         except:
-            quit_with_error("Invalid key.csv")
+            quit_with_error("Invalid key.tsv")
 
     name_slots()
     return True
@@ -184,7 +184,7 @@ def name_slots():
     global curr_elem
     global mods_info
     # Parse msg_name.xmsbt
-    char_ui_dir = path.join(char_folder, "output", "["+path.basename(char_folder).replace("[Character] ", "")+"] One Slot Names", "ui", "message")
+    char_ui_dir = path.join(char_folder, "output", "["+path.basename(char_folder).replace("[Character] ", "")+"] [One Slot Names]", "ui", "message")
     os.makedirs(char_ui_dir, exist_ok=True)
     msg_name_xmsbt = path.join(char_ui_dir, "msg_name.xmsbt")
     if not path.isfile(msg_name_xmsbt):
@@ -204,7 +204,7 @@ def name_slots():
                 for row in mods_info_csv:
                     mods_info.append(row)
         except:
-            quit_with_error("Please create key.csv from the Excel document (all 10 columns) and put it in the same directory as this script.")
+            quit_with_error("Please create key.tsv from the Excel document (all 9 columns) and put it in the same directory as this script.")
     pokemon_trainer_filter(ui_name)
     # Prepare xmsbt element
     xmsbt_new_root = ET.Element("xmsbt")

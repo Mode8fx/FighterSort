@@ -4,7 +4,7 @@ FighterSort aims to be a quick and easy way to batch organize character mods for
 
 ## How Does It Work?
 
-Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1HfauMP6ljZyaX7_kDSNJ-t8einsEgXg8YQGODkxP6CY), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged. There's a decent amount of initial setup, but it's well worth it if you have a lot of mods since almost everything after this initial setup is automated for you. For more info, see the tutorial below.
+Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1aaScKKdMVOpkFsszZ-uI_kb3F-kEVy_W5SYR6iWR1I0), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged. There's some initial setup, but it's well worth it if you have a lot of mods since almost everything after this initial setup is automated for you. For more info, see the tutorial below.
 
 ### What It Can Do
 
@@ -13,8 +13,9 @@ Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharp
 - Handle extra slots above c07
 - Fix normally-incompatible swaps (e.g. putting a female Inkling mod on a male Inkling slot) by copying the necessary model files from an ArcExplorer export
 - (Re)generate config.json for each mod
-- Edit msg_name.xmsbt to add a custom name and/or Boxing Ring title for each mod
-- Edit ui_chara_db.prcxml to change the character's number of slots
+- Automatically convert all-slot effects into one-slot
+- Generate msg_name.xmsbt to add a custom name and/or Boxing Ring title for each mod
+- Edit ui_chara_db.prcxml to change each character's number of slots
 - Handle almost all characters
 
 ### What It Can't Do (for now)
@@ -53,7 +54,7 @@ First, organize your mods for each character. The directory names are important,
             /ui
             ...
         ...
-        key.csv
+        key.tsv
     ...
     /ui_chara_db
 ```
@@ -73,15 +74,15 @@ Here's an example for Captain Falcon:
             /fighter
             /ui
             ...
-        key.csv
+        key.tsv
 ```
 I recommend keeping your unsorted mods on your PC, then copying the sorted output to your SD card.
 
-Next, you may have noticed `key.csv`. To create this, open the provided [Google Sheets document](https://docs.google.com/spreadsheets/d/1HfauMP6ljZyaX7_kDSNJ-t8einsEgXg8YQGODkxP6CY), make a copy for yourself if you haven't done so already via `File -> Make a copy`, and go to the sheet that matches your character. Fill in the info for your mod (column F is determined by the other columns' values, while G and H are optional). Instead of typing this info manually, you can also download [info_getter.py](https://github.com/Mode8fx/FighterSort/blob/main/oneslotnamer.py), put it in your character's directory alongside that character's mod folders, and run it; this will generate a text file that you can copy and paste into the spreadsheet.
+Next, you may have noticed `key.tsv`. To create this, open the provided [Google Sheets document](https://docs.google.com/spreadsheets/d/1aaScKKdMVOpkFsszZ-uI_kb3F-kEVy_W5SYR6iWR1I0), make a copy for yourself if you haven't done so already via `File -> Make a copy`, and go to the sheet that matches your character. Fill in the info for your mod (column F is determined by the other columns' values, while G and H are optional). Instead of typing this info manually, you can also download [info_getter.py](https://github.com/Mode8fx/FighterSort/blob/main/oneslotnamer.py), put it in your character's directory alongside that character's mod folders, and run it; this will generate a text file that you can copy and paste into the spreadsheet.
 
 Next, fill in Column E for each mod, indicating which slot it should replace/add. Set the value to X if you want to skip this mod. Column J should be changed to either "Echo Slot" or "New Character" if either of those is true.
 
-Finally, select columns A-I (excluding header) and copy+paste them into a file named `key.csv`. Save this CSV file in the same directory as your mods for the character in question, as shown above.
+Finally, go to `File -> Download -> Tab Separated Values (.tsv)`. Save this file as `key.tsv` in the same directory as your mods for the character in question, as shown above.
 
 ### Part 3: Running the Sorter
 Open `FighterSort.exe`. If this is your first time running it, you will be asked to point to your ArcExplorer `export` folder, along with the `ui_chara_db.prcxml` from the included `ui_chara_db` folder.
