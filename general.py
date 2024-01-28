@@ -18,10 +18,10 @@ def quit_with_error(err):
 	sys.exit()
 
 def print_key_info_and_quit():
-    print("Please create key.csv from the Excel document (all 10 columns) and put it in the character directory.")
+    print("Please create key.csv from the Excel document (all 9 columns) and put it in the character directory.")
     print("The Excel document can be found at the link below. Make a copy and edit it with info about your own mods.")
-    print("PLACEHOLDER URL")
-    quit_with_error("Fill out columns A-J (excluding F and G) manually, or run info_getter.py.")
+    print("https://docs.google.com/spreadsheets/d/1HfauMP6ljZyaX7_kDSNJ-t8einsEgXg8YQGODkxP6CY")
+    quit_with_error("Fill out columns A-I (excluding F) manually, or run info_getter.py and copy/paste the results into the spreadsheet.")
 
 ##########
 # Config #
@@ -61,14 +61,14 @@ set_config_path_var(path_name, temp_msg, temp_title)
 # temp_title = "msg_name.xmsbt"
 # set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("XMSBT Files", "*.xmsbt")])
 
-# path_name = "ui_chara_db_prcxml"
-# temp_msg = "Select your ui_chara_db.prcxml file.\n\nThis file will keep track of how many slots each fighter has."
-# temp_title = "ui_chara_db.prcxml"
-# set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
+path_name = "ui_chara_db_prcxml"
+temp_msg = "Select your ui_chara_db.prcxml file. This file will keep track of how many slots each fighter has.\n\nThis file should be stored as:\nui_chara_db/ui/param/database/ui_chara_db.prcxml"
+temp_title = "ui_chara_db.prcxml"
+set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
 
 arc_export_dir = config["Paths"]["arc_export_dir"]
 # msg_name_xmsbt = config["Paths"]["msg_name_xmsbt"]
-# ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
+ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
 
 ##################
 # Character Info #

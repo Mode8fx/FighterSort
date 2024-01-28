@@ -95,7 +95,7 @@ def main(argv):
         with open(key_csv) as file:
             mods_info_csv = csv.reader(file, delimiter="\t")
             for row in mods_info_csv:
-                assert len(row) >= 10
+                assert len(row) >= 9
                 mods_info.append(row)
     except:
         print_key_info_and_quit()
@@ -195,20 +195,20 @@ def main(argv):
         oneslotnamer.run_with_func("pzenigame", 39, False, mods_info, char_folder)
         oneslotnamer.run_with_func("pfushigisou", 40, False, mods_info, char_folder)
         oneslotnamer.run_with_func("plizardon", 41, False, mods_info, char_folder)
-        ui_index_string = "38 (Pokemon Trainer), 39 (Squirtle), 40 (Ivysaur), and 41 (Charizard)"
+        # ui_index_string = "38 (Pokemon Trainer), 39 (Squirtle), 40 (Ivysaur), and 41 (Charizard)"
     elif char.name == "Pyra and Mythra":
         oneslotnamer.run_with_func("element", 114, False, mods_info, char_folder)
         oneslotnamer.run_with_func("eflame_first", 115, False, mods_info, char_folder)
         oneslotnamer.run_with_func("elight_first", 116, False, mods_info, char_folder)
         oneslotnamer.run_with_func("eflame_only", 117, False, mods_info, char_folder)
         oneslotnamer.run_with_func("elight_only", 118, False, mods_info, char_folder)
-        ui_index_string = "114 (Pyra and Mythra), 115 (Pyra), 116 (Mythra), 117 (Pyra only), and 118 (Mythra only)"
+        # ui_index_string = "114 (Pyra and Mythra), 115 (Pyra), 116 (Mythra), 117 (Pyra only), and 118 (Mythra only)"
     else:
         oneslotnamer.run_with_func(char.ui_name, char.ui_index, char.has_article, mods_info, char_folder)
-        ui_index_string = f"{char.ui_index} ({char.ui_name})"
+        # ui_index_string = f"{char.ui_index} ({char.ui_name})"
 
-    print("\n\nSorting complete. Don't forget to open your ui_chara_db.prcxml and change color_num as needed for struct index " + ui_index_string + ".")
-    getpass("\nPress Enter to exit.")
+    print("\n\nSorting complete.")
+    getpass("Press Enter to exit.")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
