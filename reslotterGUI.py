@@ -774,7 +774,7 @@ def RunReslotter(onlyConfig=False):
 	# 	with open('config.ini', 'w+') as configfile:
 	# 		config.write(configfile)
 
-	root.withdraw()
+	# root.withdraw()
 	# print(targets)
 	#set directory to clone everything to, keep it the same, or use a temp folder
 	# targetName = " ("+targetName[1:]
@@ -946,7 +946,7 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
 	# else:
 	# 	messagebox.showerror(root.title(),"Failed to reslot")
 
-	root.deiconify()
+	# root.deiconify()
 	root.UnsavedChanges=False
 	# UpdateHeader()
 
