@@ -13,6 +13,8 @@ import string
 
 # Config is initialized in general.py
 
+model_files = ["model.numatb", "model.numdlb", "model.numshb", "model.nusktb"]
+
 def get_mod_folder_of_name(char, mod_name):
     # Just the name
     for folder in listdir(char_folder):
@@ -40,6 +42,12 @@ def populate_fighter_hashes():
                     fighter_hashes[hash_char].append(line)
                 except:
                     continue
+
+def model_path_contains_mod(mod_model_dir):
+    for mf in model_files:
+        if path.isfile(path.join(mod_model_dir, mf)):
+            return True
+    return False
 
 def main(argv):
     global char_folder
@@ -168,7 +176,7 @@ def main(argv):
                             try:
                                 sub_path_split = sub_path.split("/")
                                 assert sub_path_split[-2] == curr_alt_str
-                                assert sub_path_split[-1] in ["model.numatb", "model.numdlb", "model.numshb", "model.nusktb"]
+                                assert sub_path_split[-1] in model_files
                                 # assert sub_path_split[-1] != ""
                             except:
                                 continue
@@ -178,7 +186,7 @@ def main(argv):
                             new_model_dir = path.dirname(new_model_path)
                             old_model_path = path.join(mod_folder, sub_path)
                             old_model_dir = path.dirname(old_model_path) # to get around some model-related issues for new slots, copy the needed model files to the output BEFORE reslotting
-                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot) and path.isdir(old_model_dir):
+                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot) and path.isdir(old_model_dir): # and model_path_contains_mod(old_model_dir)
                                 original_model_path = path.join(arc_export_dir, sub_path)
                                 os.makedirs(new_model_dir, exist_ok=True)
                                 shutil.copy(original_model_path, new_model_path)
