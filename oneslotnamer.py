@@ -200,8 +200,8 @@ def name_slots():
     prcxml_orig_tree = ET.parse(prcxml_original_path)
     prcxml_original_root = prcxml_orig_tree.getroot()
     if not path.isfile(ui_chara_db_prcxml):
-        print("ui_chara_db not found in output directory. Creating a new one.")
-        os.makedirs(ui_chara_db_prcxml, exist_ok=True)
+        print("\nui_chara_db not found in output directory. Creating a new one.")
+        os.makedirs(path.dirname(ui_chara_db_prcxml), exist_ok=True)
         shutil.copy(prcxml_original_path, ui_chara_db_prcxml)
     prcxml_tree = ET.parse(ui_chara_db_prcxml)
     prcxml_root = prcxml_tree.getroot()
