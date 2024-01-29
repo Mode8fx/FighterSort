@@ -706,12 +706,12 @@ def RunReslotter(onlyConfig=False):
 	exclude = (root.excludeCheckVariable.get() and not onlyConfig)
 	clone = (root.cloneCheckVariable.get() and not onlyConfig)
 
-	if (exclude and not clone):
-		res = messagebox.askquestion(root.title(), "If you want to use the same folder, but exclude all other alts,"
-			"all mod files that are excluded will be deleted! Are you sure you want to do this?"
-			)
-		if res != 'yes':
-			return
+	# if (exclude and not clone):
+	# 	res = messagebox.askquestion(root.title(), "If you want to use the same folder, but exclude all other alts,"
+	# 		"all mod files that are excluded will be deleted! Are you sure you want to do this?"
+	# 		)
+	# 	if res != 'yes':
+	# 		return
 
 	sources=[""]*len(root.UIsources)
 	targets=[""]*len(root.UItargets)
@@ -928,8 +928,8 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
 
 			if (not clone):
 				shutil.rmtree(root.searchDir, ignore_errors=True)
-				os.rename(root.targetDir,root.searchDir)
-				root.targetDir=root.searchDir
+				# os.rename(root.targetDir,root.searchDir)
+				# root.targetDir=root.searchDir
 
 		if (root.currentFighter != "all"):
 			CreatePRCXML(root.currentFighter,root.targetDir)
@@ -969,7 +969,7 @@ def has_non_empty_values(data):
 		return any(has_non_empty_values(item) for item in data)
 	return True
 
-def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_dir, share=False, new_ui_name="", new_ui_num=0):
+def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_dir, share=False, new_ui_name="", new_ui_num=0, replace=False):
 	# Prepare Hashes_all.txt
 	root.hashes = os.getcwd() +"/Hashes_all.txt"
 	if (not os.path.isfile(root.hashes)):
@@ -990,7 +990,10 @@ def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_di
 	root.targetDir = target_dir
 	root.shareCheckVariable = IntVar(value=share)
 	root.excludeCheckVariable = IntVar(value=1)
-	root.cloneCheckVariable = IntVar(value=1)
+	if replace:
+		root.cloneCheckVariable = IntVar(value=0)
+	else:
+		root.cloneCheckVariable = IntVar(value=1)
 	root.comboPRC = StringVar(value="")
 	root.redirectEntryVariable = StringVar(value=new_ui_name)
 	root.new_ui_num = StringVar(value=new_ui_num)

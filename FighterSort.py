@@ -8,6 +8,8 @@ from getpass import getpass
 import reslotterGUI
 import oneslotnamer
 from general import *
+import random
+import string
 
 # Config is initialized in general.py
 
@@ -81,6 +83,7 @@ def main(argv):
         sort_all = messagebox.askyesno(root.title(), f"The selected folder contains {len(char_folders)} character folder{"" if len(char_folders) == 1 else "s"}. Would you like to sort all of them?")
         if not sort_all:
             quit_with_error("Sorting cancelled.")
+    skipped_mods = []
     for char_folder in char_folders:
         # Get current character + id
         char = None
@@ -93,7 +96,11 @@ def main(argv):
                 break
         char_names = list(set(char_names))
         if char is None:
-            quit_with_error("Character folder must be named either \"CHARACTER_NAME\" or \"[Character] CHARACTER_NAME\"")
+            print("Character folder must be named either \"CHARACTER_NAME\" or \"[Character] CHARACTER_NAME\"")
+            continue
+        if len(char_names) == 0:
+            print(f"Invalid character: {char}. Skipping.")
+            continue
         print(f"\nCharacter: {char.name} {char_names}")
 
         # Get character key (created from spreadsheet)
@@ -121,7 +128,7 @@ def main(argv):
                 continue
             target_alt_str = f"c{int(target_alt):02}"
             simple_config = row[5] == "TRUE" # Can use simple config
-            need_model_copy = (not simple_config) # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
+            need_model_copy = (not simple_config) and int(curr_alt) <= 7 # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
             is_extra_slot = int(target_alt) > 7
             need_share = (not simple_config) and is_extra_slot
             new_char_name = row[6] # Slot Name (may be empty)
@@ -130,8 +137,9 @@ def main(argv):
             print(f"{curr_alt_str} -> {target_alt_str}")
             # Get mod directory
             mod_folder, mod_folder_name = get_mod_folder_of_name(char.name, mod_name)
-            if not path.isdir(mod_folder):
+            if mod_folder is None or (not path.isdir(mod_folder)):
                 print("Missing mod folder. Skipping.")
+                skipped_mods.append(f"{mod_name}")
                 continue
             # Set output directory
             output_dir = path.join(root_output_dir, f"{mod_folder_name} ({target_alt_str})")
@@ -148,7 +156,8 @@ def main(argv):
             if not ui_only:
                 if need_model_copy:
                     # only use the first char_id since reslotterGUI already handles characters with multiple IDs
-                    reslotterGUI.run_with_func([curr_alt_str], [curr_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num)
+                    suffix = "-" + (''.join(random.choices(string.ascii_lowercase, k=8)))
+                    reslotterGUI.run_with_func([curr_alt_str], [curr_alt_str], char_names[0], mod_folder, output_dir+suffix, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
                     if not fighter_hashes:
                         populate_fighter_hashes()
                     for name in char_names:
@@ -165,7 +174,7 @@ def main(argv):
                                 continue
                             # new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
                             new_sub_path = sub_path
-                            new_model_path = path.join(output_dir, new_sub_path)
+                            new_model_path = path.join(output_dir+suffix, new_sub_path)
                             new_model_dir = path.dirname(new_model_path)
                             old_model_path = path.join(mod_folder, sub_path)
                             old_model_dir = path.dirname(old_model_path) # to get around some model-related issues for new slots, copy the needed model files to the output BEFORE reslotting
@@ -187,7 +196,7 @@ def main(argv):
                                 continue
                             # new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
                             new_sub_path = sub_path
-                            new_model_path = path.join(output_dir, new_sub_path)
+                            new_model_path = path.join(output_dir+suffix, new_sub_path)
                             new_model_dir = path.dirname(new_model_path)
                             if (not path.isfile(new_model_path)):
                                 original_model_path = path.join(arc_export_dir, sub_path)
@@ -197,9 +206,9 @@ def main(argv):
                         if num_copied > old_num_copied:
                             print(f"Copied missing ptrainer_low from original {curr_alt_str}")
                     # run reslotter a second time; once to prepare for model copying, and once to actually reslot
-                    reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], output_dir, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num)
+                    reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], output_dir+suffix, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=True)
                 else:
-                    reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num)
+                    reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
             original_plugin_path = path.join(mod_folder, "plugin.nro")
             if path.isfile(original_plugin_path):
                 new_plugin_path = path.join(output_dir, "plugin.nro")
@@ -223,6 +232,11 @@ def main(argv):
             # ui_index_string = f"{char.ui_index} ({char.ui_name})"
 
     print("\n\nSorting complete.")
+    if len(skipped_mods) > 0:
+        print("\nSkipped mods:")
+        for mod in skipped_mods:
+            print(mod)
+        print("")
     getpass("Press Enter to exit.")
 
 if __name__ == "__main__":
