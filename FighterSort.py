@@ -141,8 +141,9 @@ def main(argv):
         else:
             new_ui = ""
         if not ui_only:
-            reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num) # only use the first char_id since reslotterGUI already handles characters with multiple IDs
             if need_model_copy:
+                # only use the first char_id since reslotterGUI already handles characters with multiple IDs
+                reslotterGUI.run_with_func([curr_alt_str], [curr_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num)
                 if not fighter_hashes:
                     populate_fighter_hashes()
                 for name in char_names:
@@ -157,12 +158,15 @@ def main(argv):
                             # assert sub_path_split[-1] != ""
                         except:
                             continue
-                        new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
+                        # new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
+                        new_sub_path = sub_path
                         new_model_path = path.join(output_dir, new_sub_path)
                         new_model_dir = path.dirname(new_model_path)
-                        if (not path.isfile(new_model_path)) and (new_sub_path in fighter_hashes[name]) and path.isdir(new_model_dir):
+                        old_model_path = path.join(mod_folder, sub_path)
+                        old_model_dir = path.dirname(old_model_path) # to get around some model-related issues for new slots, copy the needed model files to the output BEFORE reslotting
+                        if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot) and path.isdir(old_model_dir):
                             original_model_path = path.join(arc_export_dir, sub_path)
-                            # os.makedirs(new_model_dir, exist_ok=True)
+                            os.makedirs(new_model_dir, exist_ok=True)
                             shutil.copy(original_model_path, new_model_path)
                             num_copied += 1
                             # print(f"Copied: {new_model_path}")
@@ -176,7 +180,8 @@ def main(argv):
                             assert sub_path_split[-2] == curr_alt_str
                         except:
                             continue
-                        new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
+                        # new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
+                        new_sub_path = sub_path
                         new_model_path = path.join(output_dir, new_sub_path)
                         new_model_dir = path.dirname(new_model_path)
                         if (not path.isfile(new_model_path)):
@@ -186,6 +191,10 @@ def main(argv):
                             num_copied += 1
                     if num_copied > old_num_copied:
                         print(f"Copied missing ptrainer_low from original {curr_alt_str}")
+                # run reslotter a second time; once to prepare for model copying, and once to actually reslot
+                reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], output_dir, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num)
+            else:
+                reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num)
         original_plugin_path = path.join(mod_folder, "plugin.nro")
         if path.isfile(original_plugin_path):
             new_plugin_path = path.join(output_dir, "plugin.nro")
