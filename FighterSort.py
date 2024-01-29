@@ -108,8 +108,6 @@ def main(argv):
                         mods_info.append(row[:9])
         except:
             print_key_info_and_quit()
-        if not (path.isdir(config["Paths"]["output_dir"]) or ui_only):
-            os.mkdir(config["Paths"]["output_dir"])
         new_ui_num = 0 # for setting the UI number of new characters/echo slots
         curr_new_ui_name = None
         # For each mod in csv...
@@ -136,7 +134,7 @@ def main(argv):
                 print("Missing mod folder. Skipping.")
                 continue
             # Set output directory
-            output_dir = path.join(config["Paths"]["output_dir"], f"{mod_folder_name} ({target_alt_str})")
+            output_dir = path.join(root_output_dir, f"{mod_folder_name} ({target_alt_str})")
             # Reslot the desired mod
             if is_new_slot:
                 new_ui = new_char_name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_')

@@ -57,7 +57,7 @@ temp_msg = "Select the directory that contains your ArcExplorer export.\n\nIt sh
 temp_title = "ArcExplorer export directory"
 set_config_path_var(path_name, temp_msg, temp_title)
 
-path_name = "output_dir"
+path_name = "root_output_dir"
 temp_msg = "Select the output directory. Your mods will be sorted and copied into this directory.\n\nYou can then move the contents of this directory to your SD card."
 temp_title = "Mod output directory"
 set_config_path_var(path_name, temp_msg, temp_title)
@@ -67,14 +67,16 @@ set_config_path_var(path_name, temp_msg, temp_title)
 # temp_title = "msg_name.xmsbt"
 # set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("XMSBT Files", "*.xmsbt")])
 
-path_name = "ui_chara_db_prcxml"
-temp_msg = "Select your ui_chara_db.prcxml file. This file will keep track of how many slots each fighter has.\n\nThis file should be stored as:\nui_chara_db/ui/param/database/ui_chara_db.prcxml\n\nYou may want to put ui_chara_db in your output directory for easy access."
-temp_title = "ui_chara_db.prcxml"
-set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
+# path_name = "ui_chara_db_prcxml"
+# temp_msg = "Select your ui_chara_db.prcxml file. This file will keep track of how many slots each fighter has.\n\nThis file should be stored as:\nui_chara_db/ui/param/database/ui_chara_db.prcxml\n\nYou may want to put ui_chara_db in your output directory for easy access."
+# temp_title = "ui_chara_db.prcxml"
+# set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
 
 arc_export_dir = config["Paths"]["arc_export_dir"]
+root_output_dir = config["Paths"]["root_output_dir"]
 # msg_name_xmsbt = config["Paths"]["msg_name_xmsbt"]
-ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
+# ui_chara_db_prcxml = config["Paths"]["ui_chara_db_prcxml"]
+ui_chara_db_prcxml = path.join(root_output_dir, "ui_chara_db", "ui", "param", "database", "ui_chara_db.prcxml")
 
 ##################
 # Character Info #

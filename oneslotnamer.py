@@ -6,6 +6,7 @@ from getpass import getpass
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from general import *
+import shutil
 
 # TODO: ui_names[0] is a lazy fix and doesn't work for Pokemon Trainer or Pyra/Mythra
 # TODO: Handle new CSS slots
@@ -184,7 +185,7 @@ def name_slots():
     global curr_elem
     global mods_info
     # Parse msg_name.xmsbt
-    char_ui_dir = path.join(config["Paths"]["output_dir"], "["+path.basename(char_folder).replace("[Character] ", "")+"] [One Slot Names]", "ui", "message")
+    char_ui_dir = path.join(root_output_dir, "["+path.basename(char_folder).replace("[Character] ", "")+"] [One Slot Names]", "ui", "message")
     os.makedirs(char_ui_dir, exist_ok=True)
     msg_name_xmsbt = path.join(char_ui_dir, "msg_name.xmsbt")
     if not path.isfile(msg_name_xmsbt):
@@ -194,6 +195,14 @@ def name_slots():
     xmsbt_tree = ET.parse(msg_name_xmsbt)
     xmsbt_root = xmsbt_tree.getroot()
     # Parse ui_chara_db.prcxml
+    # Read original (built-in) prcxml for original character values
+    prcxml_original_path = path.join(os.path.dirname(os.path.realpath(__file__)), "ui_chara_db (original).prcxml")
+    prcxml_orig_tree = ET.parse(prcxml_original_path)
+    prcxml_original_root = prcxml_orig_tree.getroot()
+    if not path.isfile(ui_chara_db_prcxml):
+        print("ui_chara_db not found in output directory. Creating a new one.")
+        os.makedirs(ui_chara_db_prcxml, exist_ok=True)
+        shutil.copy(prcxml_original_path, ui_chara_db_prcxml)
     prcxml_tree = ET.parse(ui_chara_db_prcxml)
     prcxml_root = prcxml_tree.getroot()
     # Get character key (created from spreadsheet)
@@ -214,10 +223,6 @@ def name_slots():
     prcxml_color_num_elem = ET.SubElement(curr_elem, "byte")
     prcxml_color_num_elem.set("hash", "color_num")
     prcxml_color_num_elem.text = "8"
-    # Read original (built-in) prcxml for original character values
-    prcxml_original_path = path.join(os.path.dirname(os.path.realpath(__file__)), "ui_chara_db (original).prcxml")
-    prcxml_orig_tree = ET.parse(prcxml_original_path)
-    prcxml_original_root = prcxml_orig_tree.getroot()
     # For each mod in csv...
     # TODO: handle trainer and pyra/mythra
     for row in mods_info:
