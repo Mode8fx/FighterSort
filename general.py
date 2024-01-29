@@ -10,6 +10,7 @@ from tkinter import messagebox, filedialog
 # General #
 ###########
 
+config = {}
 directory = os.getcwd()
 
 def quit_with_error(err):
@@ -56,13 +57,18 @@ temp_msg = "Select the directory that contains your ArcExplorer export.\n\nIt sh
 temp_title = "ArcExplorer export directory"
 set_config_path_var(path_name, temp_msg, temp_title)
 
+path_name = "output_dir"
+temp_msg = "Select the output directory. Your mods will be sorted and copied into this directory.\n\nYou can then move the contents of this directory to your SD card."
+temp_title = "Mod output directory"
+set_config_path_var(path_name, temp_msg, temp_title)
+
 # path_name = "msg_name_xmsbt"
 # temp_msg = "Select your msg_name.xmsbt file.\n\nThis file will be modified whenever a mod with a custom name or Boxing Ring title is sorted."
 # temp_title = "msg_name.xmsbt"
 # set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("XMSBT Files", "*.xmsbt")])
 
 path_name = "ui_chara_db_prcxml"
-temp_msg = "Select your ui_chara_db.prcxml file. This file will keep track of how many slots each fighter has.\n\nThis file should be stored as:\nui_chara_db/ui/param/database/ui_chara_db.prcxml"
+temp_msg = "Select your ui_chara_db.prcxml file. This file will keep track of how many slots each fighter has.\n\nThis file should be stored as:\nui_chara_db/ui/param/database/ui_chara_db.prcxml\n\nYou may want to put ui_chara_db in your output directory for easy access."
 temp_title = "ui_chara_db.prcxml"
 set_config_path_var(path_name, temp_msg, temp_title, filetypes=[("PRCXML Files", "*.prcxml")])
 

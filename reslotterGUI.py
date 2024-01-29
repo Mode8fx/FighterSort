@@ -900,7 +900,7 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
 				tAsInt = int(target.strip("c"))
 				if (tAsInt<8):
 					share = ""
-			print("Source:"+source+" Target:"+target+" Share:"+("None" if share == "" else share))
+			# print("Source:"+source+" Target:"+target+" Share:"+("None" if share == "" else share))
 			if (target == "" and exclude==True):
 				continue
 			outdirCall = "" if (onlyConfig) else root.targetDir
