@@ -237,7 +237,7 @@ def main(argv):
                             for slot in ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07"]:
                                 if slot == assumed_share_slot:
                                     continue
-                                if any(int(slot.strip("c")) == int(r[4]) for r in mods_info):
+                                if any(int(slot.strip("c")) == int(r[4]) for r in mods_info if r[4].isnumeric()):
                                     for key in config_share_to_vanilla:
                                         split_key = key.split("/")
                                         if slot in split_key:
@@ -279,7 +279,7 @@ def main(argv):
         for mod in skipped_mods:
             print(mod)
         print("")
-    getpass("Press Enter to exit.")
+    getpass("\nPress Enter to exit.")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
