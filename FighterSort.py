@@ -268,7 +268,7 @@ def main(argv):
         print("\nWarnings:")
         for warning in warnings:
             warning_list = ", ".join(list(warning[3]))
-            if len(warning_list) > 1:
+            if len(list(warning[3])) > 1:
                 suffix_str = "each contain a mod"
             else:
                 suffix_str = "contains a mod"
