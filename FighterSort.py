@@ -10,6 +10,7 @@ import oneslotnamer
 from general import *
 import random
 import string
+import json
 
 # Config is initialized in general.py
 
@@ -92,6 +93,7 @@ def main(argv):
         if not sort_all:
             quit_with_error("Sorting cancelled.")
     skipped_mods = []
+    warnings = []
     for char_folder in char_folders:
         # Get current character + id
         char = None
@@ -222,6 +224,28 @@ def main(argv):
                 new_plugin_path = path.join(output_dir, "plugin.nro")
                 shutil.copy(original_plugin_path, new_plugin_path)
                 print(f"Copied plugin.nro from original {curr_alt_str}")
+            # Check for unexpected slot dependencies
+            if need_share:
+                unexpected_dependencies = set()
+                assumed_share_slot = f"c{reslotterGUI.GetAssumedShareSlot(curr_alt, char_names[0]):02}"
+                config_json_path = path.join(output_dir, "config.json")
+                if path.isfile(config_json_path):
+                    with open(config_json_path, "r") as config_json_file:
+                        config_json = json.load(config_json_file)
+                        config_share_to_vanilla = config_json.get("share-to-vanilla")
+                        if config_share_to_vanilla is not None:
+                            for slot in ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07"]:
+                                if slot == assumed_share_slot:
+                                    continue
+                                if any(int(slot.strip("c")) == int(r[4]) for r in mods_info):
+                                    for key in config_share_to_vanilla:
+                                        split_key = key.split("/")
+                                        if slot in split_key:
+                                            unexpected_dependencies.add(slot)
+                if len(unexpected_dependencies) > 0:
+                    print(f"WARNING: This mod, when used as an extra slot, is also dependent on the following slots: {unexpected_dependencies}")
+                    print("If you have a mod on one of those slots, this mod may not work properly!")
+                    warnings.append((char.name, mod_name, target_alt_str, unexpected_dependencies))
         if char.name == "Pokemon Trainer":
             oneslotnamer.run_with_func("ptrainer", 38, True, mods_info, char_folder)
             oneslotnamer.run_with_func("pzenigame", 39, False, mods_info, char_folder)
@@ -240,6 +264,16 @@ def main(argv):
             # ui_index_string = f"{char.ui_index} ({char.ui_name})"
 
     print("\n\nSorting complete.")
+    if len(warnings) > 0:
+        print("\nWarnings:")
+        for warning in warnings:
+            warning_list = ", ".join(list(warning[3]))
+            if len(warning_list) > 1:
+                suffix_str = "each contain a mod"
+            else:
+                suffix_str = "contains a mod"
+            print(f"{warning[0]}: Mod in {warning[2]} ({warning[1]}) depends on {warning_list}, which {suffix_str}")
+            print(f"    Recommendation: Don't put a mod in {warning_list}")
     if len(skipped_mods) > 0:
         print("\nSkipped mods:")
         for mod in skipped_mods:

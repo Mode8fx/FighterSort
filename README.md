@@ -15,6 +15,7 @@ There's some initial setup, but it's well worth it if you have a lot of mods sin
 - Handle extra slots above c07
 - Fix normally-incompatible swaps (e.g. putting a female Inkling mod on a male Inkling slot) by copying the necessary model files from an ArcExplorer export
 - (Re)generate config.json for each mod
+- Issue a warning when a vanilla slot mod conflicts with an extra slot mod
 - Automatically convert all-slot effects into one-slot
 - Generate msg_name.xmsbt to add a custom name and/or Boxing Ring title for each mod
 - Edit ui_chara_db.prcxml to change each character's number of slots
@@ -42,6 +43,7 @@ If you haven't done so already, use ArcExplorer to extract a `data.arc` from Sma
         /bank
         /param
 ```
+Also, each fighter directory contains four folders: `ai`, `model`, `motion`, and `param`. You only need `model`.
 The sound directory is currently not needed, but may be used in a later update.
 
 ### Part 2: Once Per Character
