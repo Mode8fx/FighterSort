@@ -227,7 +227,7 @@ def main(argv):
             # Check for unexpected slot dependencies
             if need_share:
                 unexpected_dependencies = set()
-                assumed_share_slot = f"c{reslotterGUI.GetAssumedShareSlot(curr_alt, char_names[0]):02}"
+                assumed_share_slot = f"c{reslotterGUI.GetAssumedShareSlot(int(curr_alt), char_names[0]):02}"
                 config_json_path = path.join(output_dir, "config.json")
                 if path.isfile(config_json_path):
                     with open(config_json_path, "r") as config_json_file:
