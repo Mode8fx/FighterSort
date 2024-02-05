@@ -115,6 +115,7 @@ def main(argv):
 
         # Get character key (created from spreadsheet)
         mods_info = []
+        mods_info_by_target_slot = {}
         key_csv = path.join(char_folder, "key.tsv")
         try:
             with open(key_csv) as file:
@@ -153,6 +154,10 @@ def main(argv):
                 continue
             # Set output directory
             output_dir = path.join(root_output_dir, f"{mod_folder_name} ({target_alt_str})")
+            # Store output directory (used for checking for unexpected slot dependencies)
+            if mods_info_by_target_slot.get(target_alt_str) is None:
+                mods_info_by_target_slot[target_alt_str] = []
+            mods_info_by_target_slot[target_alt_str].append((mod_name, output_dir))
             # Reslot the desired mod
             if is_new_slot:
                 new_ui = new_char_name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_')
@@ -234,17 +239,28 @@ def main(argv):
                         config_json = json.load(config_json_file)
                         config_share_to_vanilla = config_json.get("share-to-vanilla")
                         if config_share_to_vanilla is not None:
-                            for slot in ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07"]:
-                                if slot == assumed_share_slot:
-                                    continue
-                                if any(int(slot.strip("c")) == int(r[4]) for r in mods_info if r[4].isnumeric()):
-                                    for key in config_share_to_vanilla:
-                                        split_key = key.split("/")
-                                        if slot in split_key:
-                                            unexpected_dependencies.add(slot)
+                            # possible_slots represents all slots that COULD be an unexpected dependency
+                            possible_slots = ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07"]
+                            if assumed_share_slot in possible_slots:
+                                possible_slots.remove(assumed_share_slot)
+                            possible_slots = list(set(possible_slots) & set(["c0"+r[4] for r in mods_info]))
+                            possible_slots.sort()
+                            for key in config_share_to_vanilla:
+                                for slot in possible_slots:
+                                    if f"/{slot}/" in key:
+                                        # unexpected_dependencies.add(slot)
+                                        # now we know that this mod may contain an unexpected dependency; we need to check the mod(s) in the other slot to see if they contain the specific files that this mod is dependent on
+                                        for other_mod in mods_info_by_target_slot[slot]:
+                                            other_output_dir = other_mod[1]
+                                            if path.isfile(path.join(other_output_dir, key)):
+                                                unexpected_dependencies.add(slot)
+                                                break
                 if len(unexpected_dependencies) > 0:
-                    print(f"WARNING: This mod, when used as an extra slot, is also dependent on the following slots: {unexpected_dependencies}")
-                    print("If you have a mod on one of those slots, this mod may not work properly!")
+                    print(f"WARNING: This mod, when used as an extra slot, is also dependent on {", ".join(list(unexpected_dependencies))}.")
+                    if len(unexpected_dependencies) > 1:
+                        print("    The mods you have in those slots conflict, so this mod may not work right.")
+                    else:
+                        print("    The mod you have in that slot conflicts, so this mod may not work right.")
                     warnings.append((char.name, mod_name, target_alt_str, unexpected_dependencies))
         if char.name == "Pokemon Trainer":
             oneslotnamer.run_with_func("ptrainer", 38, True, mods_info, char_folder)
@@ -268,11 +284,7 @@ def main(argv):
         print("\nWarnings:")
         for warning in warnings:
             warning_list = ", ".join(list(warning[3]))
-            if len(list(warning[3])) > 1:
-                suffix_str = "each contain a mod"
-            else:
-                suffix_str = "contains a mod"
-            print(f"{warning[0]}: Mod in {warning[2]} ({warning[1]}) depends on {warning_list}, which {suffix_str}")
+            print(f"{warning[0]}: Mod in {warning[2]} ({warning[1]}) has dependencies which conflict with the mod(s) in {warning_list}")
             print(f"    Recommendation: Don't put a mod in {warning_list}")
     if len(skipped_mods) > 0:
         print("\nSkipped mods:")
