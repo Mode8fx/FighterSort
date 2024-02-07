@@ -51,6 +51,21 @@ def model_path_contains_mod(mod_model_dir):
             return True
     return False
 
+def copy_other_files(mod_folder, output_dir, char_names, target_alt_str):
+    original_effect_path = path.join(mod_folder, "effect", "fighter", char_names[0], f"ef_{char_names[0]}.eff")
+    if path.isfile(original_effect_path):
+        new_effect_path = path.join(output_dir, "effect", "fighter", char_names[0], f"ef_{char_names[0]}_{target_alt_str}.eff")
+        if not path.isfile(new_effect_path):
+            os.makedirs(path.dirname(new_effect_path), exist_ok=True)
+            shutil.copy(original_effect_path, new_effect_path)
+            print(f"Copied ef_{char_names[0]}.eff from original {target_alt_str} and made it one-slot")
+    # copy plugin.nro
+    original_plugin_path = path.join(mod_folder, "plugin.nro")
+    if path.isfile(original_plugin_path):
+        new_plugin_path = path.join(output_dir, "plugin.nro")
+        shutil.copy(original_plugin_path, new_plugin_path)
+        print(f"Copied plugin.nro from original {target_alt_str}")
+
 def main(argv):
     global char_folder
     global fighter_hashes
@@ -221,15 +236,14 @@ def main(argv):
                                 num_copied += 1
                         if num_copied > old_num_copied:
                             print(f"Copied missing ptrainer_low from original {curr_alt_str}")
+                    # copy all-slots effect (one-slot is already handled) and plugin.nro
+                    copy_other_files(output_dir+suffix, output_dir, char_names, target_alt_str)
                     # run reslotter a second time; once to prepare for model copying, and once to actually reslot
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], output_dir+suffix, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=True)
                 else:
+                    # copy all-slots effect (one-slot is already handled) and plugin.nro
+                    copy_other_files(mod_folder, output_dir, char_names, target_alt_str)
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
-            original_plugin_path = path.join(mod_folder, "plugin.nro")
-            if path.isfile(original_plugin_path):
-                new_plugin_path = path.join(output_dir, "plugin.nro")
-                shutil.copy(original_plugin_path, new_plugin_path)
-                print(f"Copied plugin.nro from original {curr_alt_str}")
             # Check for unexpected slot dependencies
             if need_share:
                 unexpected_dependencies = set()
