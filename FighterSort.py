@@ -11,6 +11,7 @@ from general import *
 import random
 import string
 import json
+from datetime import datetime
 
 # Config is initialized in general.py
 
@@ -193,7 +194,7 @@ def main(argv):
                             new_model_dir = path.dirname(new_model_path)
                             old_model_path = path.join(mod_folder, sub_path)
                             old_model_dir = path.dirname(old_model_path) # to get around some model-related issues for new slots, copy the needed model files to the output BEFORE reslotting
-                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot) and path.isdir(old_model_dir): # and model_path_contains_mod(old_model_dir)
+                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot): # and path.isdir(old_model_dir) and model_path_contains_mod(old_model_dir)
                                 original_model_path = path.join(arc_export_dir, sub_path)
                                 os.makedirs(new_model_dir, exist_ok=True)
                                 shutil.copy(original_model_path, new_model_path)
@@ -280,18 +281,36 @@ def main(argv):
             # ui_index_string = f"{char.ui_index} ({char.ui_name})"
 
     print("\n\nSorting complete.")
+    log_file = None
+    if len(warnings) + len(skipped_mods) > 0:
+        log_file = path.join(path.dirname(sys.executable), f"FighterSort_Log_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt")
+        with open(log_file, "w") as log:
+            pass
     if len(warnings) > 0:
         print("\nWarnings:")
+        with open(log_file, "a") as log:
+            log.write("Warnings:\n")
         for warning in warnings:
             warning_list = ", ".join(list(warning[3]))
             print(f"{warning[0]}: Mod in {warning[2]} ({warning[1]}) has dependencies which conflict with the mod(s) in {warning_list}")
             print(f"    Recommendation: Don't put a mod in {warning_list}")
+            # append to log_file
+            with open(log_file, "a") as log:
+                log.write(f"{warning[0]}: Mod in {warning[2]} ({warning[1]}) has dependencies which conflict with the mod(s) in {warning_list}\n")
+                log.write(f"    Recommendation: Don't put a mod in {warning_list}\n")
     if len(skipped_mods) > 0:
         print("\nSkipped mods:")
+        with open(log_file, "a") as log:
+            log.write("\nSkipped mods:\n")
         for mod in skipped_mods:
             print(mod)
+            with open(log_file, "a") as log:
+                log.write(f"{mod}\n")
         print("")
-    getpass("\nPress Enter to exit.")
+    print("")
+    if log_file is not None:
+        print(f"Warning log written to {log_file}.")
+    getpass("Press Enter to exit.")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
