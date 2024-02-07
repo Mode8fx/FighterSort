@@ -19,11 +19,9 @@ There's some initial setup, but it's well worth it if you have a lot of mods sin
 - Automatically convert all-slot effects into one-slot
 - Generate msg_name.xmsbt to add a custom name and/or Boxing Ring title for each mod
 - Edit ui_chara_db.prcxml to change each character's number of slots
-- Handle almost all characters
 
 ### What It Can't Do (for now)
 
-- Pokemon Trainer and Pyra/Mythra
 - Add new CSS character slots (it does not add character slots to the CSS, but it does copy+rename new character mods as needed (this is untested, but I think it should work))
 - Add single-slot victory themes
 - Add single-slot announcer calls (vc_narration_characall_SLOTNAME is added to ui_chara_db.prcxml, but you'll have to add the actual announcer call yourself; if you don't, that slot's announcer call with be silent)
