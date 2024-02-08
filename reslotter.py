@@ -109,6 +109,21 @@ def reslot_fighter_files(mod_directory, fighter_files, current_alt, target_alt, 
             #Prevent duplicates
             reslotted_files.append(new_file)
 
+        else:
+            if (not "/"+current_alt+"/" in file):
+                continue
+            
+            lookfor = f"/{current_alt}/"
+            replace = f"/{target_alt}/"
+            new_file = file.replace(lookfor, replace)
+            
+            #Used during "reconfig" to not copy files and simply add to the list of files for the config
+            if out_dir != "":
+                makeDirsFromFile(os.path.join(out_dir, new_file))
+                shutil.copy(os.path.join(mod_directory, file), os.path.join(out_dir, new_file))
+
+            reslotted_files.append(new_file)
+
     existing_files.extend(reslotted_files)
     #if 7 < int(target_alt.strip("c")):
     if share_slot != "":

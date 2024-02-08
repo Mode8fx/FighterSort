@@ -156,3 +156,4 @@ cython_debug/
 /victory_template
 /virtualenv
 config.ini
+/release

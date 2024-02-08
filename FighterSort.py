@@ -51,6 +51,14 @@ def model_path_contains_mod(mod_model_dir):
             return True
     return False
 
+def copy_file_generic(mod_folder, output_dir, file):
+    original_path = path.join(mod_folder, file)
+    if path.isfile(original_path):
+        new_path = path.join(output_dir, file)
+        os.makedirs(path.dirname(new_path), exist_ok=True)
+        shutil.copy(original_path, new_path)
+        print(f"Copied {file}")
+
 def copy_other_files(mod_folder, output_dir, char_names, target_alt_str):
     original_effect_path = path.join(mod_folder, "effect", "fighter", char_names[0], f"ef_{char_names[0]}.eff")
     if path.isfile(original_effect_path):
@@ -59,12 +67,8 @@ def copy_other_files(mod_folder, output_dir, char_names, target_alt_str):
             os.makedirs(path.dirname(new_effect_path), exist_ok=True)
             shutil.copy(original_effect_path, new_effect_path)
             print(f"Copied ef_{char_names[0]}.eff from original {target_alt_str} and made it one-slot")
-    # copy plugin.nro
-    original_plugin_path = path.join(mod_folder, "plugin.nro")
-    if path.isfile(original_plugin_path):
-        new_plugin_path = path.join(output_dir, "plugin.nro")
-        shutil.copy(original_plugin_path, new_plugin_path)
-        print(f"Copied plugin.nro from original {target_alt_str}")
+    copy_file_generic(mod_folder, output_dir, "plugin.nro")
+    copy_file_generic(mod_folder, output_dir, "config_param.toml")
 
 def main(argv):
     global char_folder
@@ -84,7 +88,7 @@ def main(argv):
             force_extra = True
             print("Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
         elif arg in ["-c", "--credits"]:
-            print("Fighter Sort v0.9")
+            print("Fighter Sort v0.9a")
             print("\nCreated by Mode8fx")
             print("https://github.com/Mode8fx/FighterSort")
             print("\nOther Resources Used:")
