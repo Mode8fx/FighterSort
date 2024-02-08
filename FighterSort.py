@@ -148,7 +148,7 @@ def main(argv):
                 next(mods_info_csv) # skip the header row
                 for row in mods_info_csv:
                     if len(row) >= 9 and row[0] != "":
-                        if force_extra and not (row[8] in ["New Character", "Echo Slot"]):
+                        if force_extra and row[4].isdigit() and int(row[4]) >= 0 and not (row[8] in ["New Character", "Echo Slot"]):
                             row[4] = str(forced_target_slot)
                             forced_target_slot += 1
                         mods_info.append(row[:9])
