@@ -297,7 +297,8 @@ def main(argv):
     print("\n\nSorting complete.")
     log_file = None
     if len(warnings) + len(skipped_mods) > 0:
-        log_file = path.join(path.dirname(sys.executable), f"FighterSort_Log_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt")
+        log_file = path.join(path.dirname(sys.executable), "Logs", f"FighterSort_Log_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt")
+        os.makedirs(path.dirname(log_file), exist_ok=True)
         with open(log_file, "w") as log:
             pass
     if len(warnings) > 0:
