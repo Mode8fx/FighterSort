@@ -71,12 +71,18 @@ def main(argv):
     global fighter_hashes
     char_folders = ""
     ui_only = False
+    force_extra = False
+    forced_target_slot = -1
     for arg in argv:
         if arg in ["-h", "--help"]:
-            print("usage: python FighterSort.py <character folder>\nadd -u for ui-only (only change msg_name, do not sort+copy mods)")
+            print("usage: python FighterSort.py <character folder>\n-u: ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)\n-e: to force extra slots (ignore the target slots in the key file and put enabled mods in slot c08, c09, c10, ...)\n-c: view credits")
             sys.exit()
         elif arg in ["-u", "--ui-only"]:
             ui_only = True
+            print("UI only mode enabled. Mods will not be sorted or copied, and only msg_name and ui_chara_db will be created/modified.")
+        elif arg in ["-e", "--force-extra"]:
+            force_extra = True
+            print("Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
         elif arg in ["-c", "--credits"]:
             print("Fighter Sort v0.9")
             print("\nCreated by Mode8fx")
@@ -93,6 +99,7 @@ def main(argv):
             print("Original file by Coolsonickirby")
             print("\nHashes.txt")
             print("Original file by Smash Ultimate Research Group")
+            sys.exit()
         else:
             char_folders = arg.replace("/", "\\")
     if char_folders == "":
@@ -128,6 +135,8 @@ def main(argv):
             print(f"Invalid character: {char}. Skipping.")
             continue
         print(f"\nCharacter: {char.name} {char_names}")
+        if force_extra:
+            forced_target_slot = 8
 
         # Get character key (created from spreadsheet)
         mods_info = []
@@ -139,6 +148,9 @@ def main(argv):
                 next(mods_info_csv) # skip the header row
                 for row in mods_info_csv:
                     if len(row) >= 9 and row[0] != "":
+                        if force_extra and not (row[8] in ["New Character", "Echo Slot"]):
+                            row[4] = str(forced_target_slot)
+                            forced_target_slot += 1
                         mods_info.append(row[:9])
         except:
             print_key_info_and_quit()
@@ -244,39 +256,39 @@ def main(argv):
                     # copy all-slots effect (one-slot is already handled) and plugin.nro
                     copy_other_files(mod_folder, output_dir, char_names, target_alt_str)
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
-            # Check for unexpected slot dependencies
-            if need_share:
-                unexpected_dependencies = set()
-                assumed_share_slot = f"c{reslotterGUI.GetAssumedShareSlot(int(curr_alt), char_names[0]):02}"
-                config_json_path = path.join(output_dir, "config.json")
-                if path.isfile(config_json_path):
-                    with open(config_json_path, "r") as config_json_file:
-                        config_json = json.load(config_json_file)
-                        config_share_to_vanilla = config_json.get("share-to-vanilla")
-                        if config_share_to_vanilla is not None:
-                            # possible_slots represents all slots that COULD be an unexpected dependency
-                            possible_slots = ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07"]
-                            if assumed_share_slot in possible_slots:
-                                possible_slots.remove(assumed_share_slot)
-                            possible_slots = list(set(possible_slots) & set(["c0"+r[4] for r in mods_info]))
-                            possible_slots.sort()
-                            for key in config_share_to_vanilla:
-                                for slot in possible_slots:
-                                    if f"/{slot}/" in key:
-                                        # unexpected_dependencies.add(slot)
-                                        # now we know that this mod may contain an unexpected dependency; we need to check the mod(s) in the other slot to see if they contain the specific files that this mod is dependent on
-                                        for other_mod in mods_info_by_target_slot[slot]:
-                                            other_output_dir = other_mod[1]
-                                            if path.isfile(path.join(other_output_dir, key)):
-                                                unexpected_dependencies.add(slot)
-                                                break
-                if len(unexpected_dependencies) > 0:
-                    print(f"WARNING: This mod, when used as an extra slot, is also dependent on {", ".join(list(unexpected_dependencies))}.")
-                    if len(unexpected_dependencies) > 1:
-                        print("    The mods you have in those slots conflict, so this mod may not work right.")
-                    else:
-                        print("    The mod you have in that slot conflicts, so this mod may not work right.")
-                    warnings.append((char.name, mod_name, target_alt_str, unexpected_dependencies))
+                # Check for unexpected slot dependencies
+                if need_share:
+                    unexpected_dependencies = set()
+                    assumed_share_slot = f"c{reslotterGUI.GetAssumedShareSlot(int(curr_alt), char_names[0]):02}"
+                    config_json_path = path.join(output_dir, "config.json")
+                    if path.isfile(config_json_path):
+                        with open(config_json_path, "r") as config_json_file:
+                            config_json = json.load(config_json_file)
+                            config_share_to_vanilla = config_json.get("share-to-vanilla")
+                            if config_share_to_vanilla is not None:
+                                # possible_slots represents all slots that COULD be an unexpected dependency
+                                possible_slots = ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07"]
+                                if assumed_share_slot in possible_slots:
+                                    possible_slots.remove(assumed_share_slot)
+                                possible_slots = list(set(possible_slots) & set(["c0"+r[4] for r in mods_info]))
+                                possible_slots.sort()
+                                for key in config_share_to_vanilla:
+                                    for slot in possible_slots:
+                                        if f"/{slot}/" in key:
+                                            # unexpected_dependencies.add(slot)
+                                            # now we know that this mod may contain an unexpected dependency; we need to check the mod(s) in the other slot to see if they contain the specific files that this mod is dependent on
+                                            for other_mod in mods_info_by_target_slot[slot]:
+                                                other_output_dir = other_mod[1]
+                                                if path.isfile(path.join(other_output_dir, key)):
+                                                    unexpected_dependencies.add(slot)
+                                                    break
+                    if len(unexpected_dependencies) > 0:
+                        print(f"WARNING: This mod, when used as an extra slot, is also dependent on {", ".join(list(unexpected_dependencies))}.")
+                        if len(unexpected_dependencies) > 1:
+                            print("    The mods you have in those slots conflict, so this mod may not work right.")
+                        else:
+                            print("    The mod you have in that slot conflicts, so this mod may not work right.")
+                        warnings.append((char.name, mod_name, target_alt_str, unexpected_dependencies))
         if char.name == "Pokemon Trainer":
             oneslotnamer.run_with_func("ptrainer", 38, True, mods_info, char_folder)
             oneslotnamer.run_with_func("pzenigame", 39, False, mods_info, char_folder)
