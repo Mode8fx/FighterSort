@@ -252,7 +252,8 @@ def name_slots():
             # Update slot name in prcxml
             if name != "":
                 create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))
-                new_ui_name = name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_')
+                new_ui_name = name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_').replace('-', '_')
+                new_ui_name = ''.join(char for char in new_ui_name if char.isalnum() or char == "_")
                 create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}")
                 if has_article:
                     create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_article_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}_article")
