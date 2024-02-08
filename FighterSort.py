@@ -88,7 +88,7 @@ def main(argv):
             force_extra = True
             print("Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
         elif arg in ["-c", "--credits"]:
-            print("Fighter Sort v0.9a")
+            print("Fighter Sort v0.91")
             print("\nCreated by Mode8fx")
             print("https://github.com/Mode8fx/FighterSort")
             print("\nOther Resources Used:")
