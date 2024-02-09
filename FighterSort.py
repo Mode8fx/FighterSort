@@ -180,7 +180,7 @@ def main(argv):
             target_alt_str = f"c{int(target_alt):02}"
             is_extra_slot = int(target_alt) > 7
             simple_config = (row[5] == "TRUE") and not is_extra_slot # Can use simple config
-            need_model_copy = (not simple_config) and not is_extra_slot # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
+            need_model_copy = (not simple_config) and int(curr_alt) <= 7 # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
             need_share = (not simple_config) and is_extra_slot
             new_char_name = row[6] # Slot Name (may be empty)
             is_new_slot = (row[8] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot?
