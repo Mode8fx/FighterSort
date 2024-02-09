@@ -77,16 +77,20 @@ def main(argv):
     ui_only = False
     force_extra = False
     forced_target_slot = -1
+    force_vanilla = False
     for arg in argv:
         if arg in ["-h", "--help"]:
-            print("usage: python FighterSort.py <character folder>\n-u: ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)\n-e: to force extra slots (ignore the target slots in the key file and put enabled mods in slot c08, c09, c10, ...)\n-c: view credits")
+            print("usage: python FighterSort.py <character folder>\n-u: ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)\n-e: force extra slots (ignore the target slots in the key file and put enabled mods in slot c08, c09, c10, ...)\n-v: vanilla slots only (ignore any slots above c07)\n-c: view credits")
             sys.exit()
         elif arg in ["-u", "--ui-only"]:
             ui_only = True
             print("UI only mode enabled. Mods will not be sorted or copied, and only msg_name and ui_chara_db will be created/modified.")
-        elif arg in ["-e", "--force-extra"]:
+        elif arg in ["-e", "--force-extra", "--extra-only"]:
             force_extra = True
             print("Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
+        elif arg in ["-v", "--force-vanilla", "--vanilla-only"]:
+            force_vanilla = True
+            print("Vanilla slots only. Any mods with target slots above c07 will be ignored.")
         elif arg in ["-c", "--credits"]:
             print("Fighter Sort v0.92")
             print("\nCreated by Mode8fx")
@@ -106,6 +110,8 @@ def main(argv):
             sys.exit()
         else:
             char_folders = arg.replace("/", "\\")
+    if force_extra and force_vanilla:
+        quit_with_error("Cannot have both -e and -v flags enabled at the same time.")
     if char_folders == "":
         messagebox.showinfo(root.title(), "Select the folder containing your mods for a specific character. This folder should be named [Character], followed by the name of your character.\n\nExample: \"[Character] Toon Link\"\n\nYou can also select a parent folder containing multiple character folders.")
         char_folders = filedialog.askdirectory(title="Character's Mod Directory")
@@ -152,6 +158,8 @@ def main(argv):
                 next(mods_info_csv) # skip the header row
                 for row in mods_info_csv:
                     if len(row) >= 9 and row[0] != "":
+                        if force_vanilla and row[4].isdigit() and int(row[4]) > 7:
+                            continue
                         if force_extra and row[4].isdigit() and int(row[4]) >= 0 and not (row[8] in ["New Character", "Echo Slot"]):
                             row[4] = str(forced_target_slot)
                             forced_target_slot += 1
