@@ -244,6 +244,7 @@ def name_slots():
             create_elem(xmsbt_new_root, "entry", "label", f"nam_stage_name_{slot:02}_{ui_name}")
             create_text_elem(split_title(title))
         # CSS slot name + number of slots
+        create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))
         if is_new_slot:
             create_elem(xmsbt_new_root, "entry", "label", f"nam_chr3_00_{name}")
             create_text_elem(name.upper())
@@ -251,12 +252,13 @@ def name_slots():
             prcxml_color_num_elem.text = str(max(int(prcxml_color_num_elem.text), slot + 1))
             # Update slot name in prcxml
             if name != "":
-                create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))
                 new_ui_name = name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_').replace('-', '_')
                 new_ui_name = ''.join(char for char in new_ui_name if char.isalnum() or char == "_")
-                create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}")
-                if has_article:
-                    create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_article_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}_article")
+            else:
+                new_ui_name = ui_name
+            create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}")
+            if has_article:
+                create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_article_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}_article")
     # Finalize files
     # Edit msg_name.xmsbt
     for entry in xmsbt_new_root.findall("entry"):
