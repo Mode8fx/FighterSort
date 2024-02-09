@@ -88,7 +88,7 @@ def main(argv):
             force_extra = True
             print("Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
         elif arg in ["-c", "--credits"]:
-            print("Fighter Sort v0.91")
+            print("Fighter Sort v0.92")
             print("\nCreated by Mode8fx")
             print("https://github.com/Mode8fx/FighterSort")
             print("\nOther Resources Used:")
@@ -170,9 +170,9 @@ def main(argv):
             if not (target_alt.isdigit() and int(target_alt) >= 0):
                 continue
             target_alt_str = f"c{int(target_alt):02}"
-            simple_config = row[5] == "TRUE" # Can use simple config
-            need_model_copy = (not simple_config) and int(curr_alt) <= 7 # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
             is_extra_slot = int(target_alt) > 7
+            simple_config = (row[5] == "TRUE") and not is_extra_slot # Can use simple config
+            need_model_copy = (not simple_config) and not is_extra_slot # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
             need_share = (not simple_config) and is_extra_slot
             new_char_name = row[6] # Slot Name (may be empty)
             is_new_slot = (row[8] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot?
