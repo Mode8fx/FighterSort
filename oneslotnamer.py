@@ -88,6 +88,11 @@ def verify_and_run():
     try:
         assert path.isfile(key_csv)
         mods_info = []
+        # Get character key (created from spreadsheet)
+        with open(path.join(key_csv)) as file:
+            mods_info_csv = csv.reader(file, delimiter="\t")
+            for row in mods_info_csv:
+                mods_info.append(row)
     except:
         try:
             # mod info was passed in directly
@@ -206,15 +211,6 @@ def name_slots():
         shutil.copy(prcxml_original_path, ui_chara_db_prcxml)
     prcxml_tree = ET.parse(ui_chara_db_prcxml)
     prcxml_root = prcxml_tree.getroot()
-    # Get character key (created from spreadsheet)
-    if len(mods_info) == 0:
-        try:
-            with open(path.join(key_csv)) as file:
-                mods_info_csv = csv.reader(file, delimiter="\t")
-                for row in mods_info_csv:
-                    mods_info.append(row)
-        except:
-            quit_with_error("Please create key.tsv from the Excel document (all 9 columns) and put it in the same directory as this script.")
     pokemon_trainer_filter(ui_name)
     # Prepare xmsbt element
     xmsbt_new_root = ET.Element("xmsbt")

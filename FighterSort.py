@@ -126,7 +126,7 @@ def main(argv):
             print("- Copy none enabled. No vanilla files will be copied from the original slot.")
         elif arg in ["-c", "--credits"]:
             print(
-"""Fighter Sort v0.92
+"""Fighter Sort v0.93
 
 Created by Mode8fx
 https://github.com/Mode8fx/FighterSort

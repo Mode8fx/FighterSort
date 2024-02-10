@@ -19,7 +19,7 @@ def quit_with_error(err):
 	sys.exit()
 
 def print_key_info_and_quit():
-    print("Please create key.csv from the Excel document (all 9 columns) and put it in the character directory.")
+    print("Please create key.tsv from the Excel document (all 9 columns) and put it in the character directory.")
     print("The Excel document can be found at the link below. Make a copy and edit it with info about your own mods.")
     print("https://docs.google.com/spreadsheets/d/1HfauMP6ljZyaX7_kDSNJ-t8einsEgXg8YQGODkxP6CY")
     quit_with_error("Fill out columns A-I (excluding F) manually, or run info_getter.py and copy/paste the results into the spreadsheet.")
