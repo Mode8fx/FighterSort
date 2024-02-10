@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from general import *
 import shutil
+import re
 
 # TODO: ui_names[0] is a lazy fix and doesn't work for Pokemon Trainer or Pyra/Mythra
 # TODO: Handle new CSS slots
@@ -223,6 +224,7 @@ def name_slots():
     prcxml_color_num_elem = ET.SubElement(curr_elem, "byte")
     prcxml_color_num_elem.set("hash", "color_num")
     prcxml_color_num_elem.text = "8"
+    ui_index_dict = {}
     # For each mod in csv...
     # TODO: handle trainer and pyra/mythra
     for row in mods_info:
@@ -250,13 +252,16 @@ def name_slots():
         else:
             prcxml_color_num_elem.text = str(max(int(prcxml_color_num_elem.text), slot + 1))
             # Update slot name in prcxml
-            if name != "":
-                create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot))
+            if not name in ["", "ui_name"]:
                 new_ui_name = name.lower().replace(' ', '_').replace('&', 'and').replace('_and_', '_').replace('-', '_')
                 new_ui_name = ''.join(char for char in new_ui_name if char.isalnum() or char == "_")
+                new_ui_name = re.sub(r'_+', '_', new_ui_name)
+                slot_index = ui_index_dict.get(new_ui_name, slot)
+                create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text=str(slot_index))
+                ui_index_dict[new_ui_name] = slot_index
             else:
-                create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text="0")
                 new_ui_name = ui_name
+                create_elem(prcxml_new_struct, "byte", "hash", f"n{slot:02}_index", elem_text="0")
             create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}")
             if has_article:
                 create_elem(prcxml_new_struct, "hash40", "hash", f"characall_label_article_c{slot:02}", elem_text=f"vc_narration_characall_{new_ui_name}_article")

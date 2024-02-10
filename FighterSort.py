@@ -70,48 +70,91 @@ def copy_other_files(mod_folder, output_dir, char_names, target_alt_str):
     copy_file_generic(mod_folder, output_dir, "plugin.nro")
     copy_file_generic(mod_folder, output_dir, "config_param.toml")
 
+def debug_wait(string=""):
+    if debug_mode:
+        getpass(f"Wait! - {string}")
+
 def main(argv):
     global char_folder
     global fighter_hashes
+    global debug_mode
     char_folders = ""
     ui_only = False
     force_extra = False
     forced_target_slot = -1
     force_vanilla = False
+    force_no_echo = False
+    debug_mode = False
+    copy_all_vanilla_files = False
+    copy_no_vanilla_files = False
     for arg in argv:
         if arg in ["-h", "--help"]:
-            print("usage: python FighterSort.py <character folder>\n-u: ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)\n-e: force extra slots (ignore the target slots in the key file and put enabled mods in slot c08, c09, c10, ...)\n-v: vanilla slots only (ignore any slots above c07)\n-c: view credits")
+            print(
+"""usage: python FighterSort.py <character folder>
+
+-u: ui-only (only change msg_name and ui_chara_db, do not sort+copy mods)
+-e: force extra slots (ignore the target slots in the key file and put enabled mods in slot c08, c09, c10, ...)
+-v: vanilla slots only (ignore any slots above c07)
+-nc: no new characters (ignore mods that use new CSS slots)
+
+--copy-all: copy all mode (copy ALL vanilla files from the original slot, not just models)
+--copy-none: copy none mode (no vanilla files will be copied from the original slot)
+--debug: debug mode (print debug strings and pause at certain points)
+-c: view credits"""
+            )
             sys.exit()
         elif arg in ["-u", "--ui-only"]:
             ui_only = True
-            print("UI only mode enabled. Mods will not be sorted or copied, and only msg_name and ui_chara_db will be created/modified.")
+            print("- UI only mode enabled. Mods will not be sorted or copied, and only msg_name and ui_chara_db will be created/modified.")
         elif arg in ["-e", "--force-extra", "--extra-only"]:
             force_extra = True
-            print("Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
+            print("- Extra slots forced. The target slots from each character's key.tsv will be ignored, and mods will be put in extra slots. Disabled mods are still ignored.")
         elif arg in ["-v", "--force-vanilla", "--vanilla-only"]:
             force_vanilla = True
-            print("Vanilla slots only. Any mods with target slots above c07 will be ignored.")
+            print("- Vanilla slots only. Any mods with target slots above c07 will be ignored.")
+        elif arg in ["-nc", "--no-char"]:
+            force_no_echo = True
+            print("- No new characters forced. Mods that use new CSS slots (i.e. are marked as \"New Character\" or \"Echo Slot\") will be ignored.")
+        elif arg in ["--debug"]:
+            debug_mode = True
+            print("- Debug mode enabled. This will pause the sorter at certain points and wait for the user to press Enter before continuing.")
+        elif arg in ["--copy-all"]:
+            copy_all_vanilla_files = True
+            print("- Copy all enabled. When model copying is needed, this will copy ALL vanilla files from the original slot, not just models.")
+        elif arg in ["--copy-none"]:
+            copy_no_vanilla_files = True
+            print("- Copy none enabled. No vanilla files will be copied from the original slot.")
         elif arg in ["-c", "--credits"]:
-            print("Fighter Sort v0.92")
-            print("\nCreated by Mode8fx")
-            print("https://github.com/Mode8fx/FighterSort")
-            print("\nOther Resources Used:")
-            print("\nreslotter.py")
-            print("Original code by BluJay and Jozz")
-            print("Modified by Coolsonickirby to add support for dir addition for ReslotterGUI")
-            print("Further modified by Mode8fx for automation/integration with FighterSort")
-            print("\nReslotterGUI")
-            print("Original code by Coolsonickirby")
-            print("Modified by Mode8fx for automation/integration with FighterSort")
-            print("\ndir_info_with_files_trimmed.json")
-            print("Original file by Coolsonickirby")
-            print("\nHashes.txt")
-            print("Original file by Smash Ultimate Research Group")
+            print(
+"""Fighter Sort v0.92
+
+Created by Mode8fx
+https://github.com/Mode8fx/FighterSort
+
+Other Resources Used:
+
+reslotter.py
+Original code by BluJay and Jozz
+Modified by Coolsonickirby to add support for dir addition for ReslotterGUI
+Further modified by Mode8fx for automation/integration with FighterSort
+
+ReslotterGUI
+Original code by Coolsonickirby
+Modified by Mode8fx for automation/integration with FighterSort
+
+dir_info_with_files_trimmed.json
+Original file by Coolsonickirby
+
+Hashes.txt
+Original file by Smash Ultimate Research Group"""
+            )
             sys.exit()
         else:
             char_folders = arg.replace("/", "\\")
     if force_extra and force_vanilla:
         quit_with_error("Cannot have both -e and -v flags enabled at the same time.")
+    if copy_all_vanilla_files and copy_no_vanilla_files:
+        quit_with_error("Cannot have both --copy-all and --copy-none flags enabled at the same time.")
     if char_folders == "":
         messagebox.showinfo(root.title(), "Select the folder containing your mods for a specific character. This folder should be named [Character], followed by the name of your character.\n\nExample: \"[Character] Toon Link\"\n\nYou can also select a parent folder containing multiple character folders.")
         char_folders = filedialog.askdirectory(title="Character's Mod Directory")
@@ -160,7 +203,11 @@ def main(argv):
                     if len(row) >= 9 and row[0] != "":
                         if force_vanilla and row[4].isdigit() and int(row[4]) > 7:
                             continue
-                        if force_extra and row[4].isdigit() and int(row[4]) >= 0 and not (row[8] in ["New Character", "Echo Slot"]):
+                        if force_no_echo and row[8] in ["New Character", "Echo Slot"]:
+                            continue
+                        if not (row[4].isdigit() and int(row[4]) >= 0):
+                            continue
+                        if force_extra and not (row[8] in ["New Character", "Echo Slot"]):
                             row[4] = str(forced_target_slot)
                             forced_target_slot += 1
                         mods_info.append(row[:9])
@@ -175,12 +222,10 @@ def main(argv):
             curr_alt = row[1] # Default Slot
             curr_alt_str = f"c{int(curr_alt):02}"
             target_alt = row[4] # Final Slot
-            if not (target_alt.isdigit() and int(target_alt) >= 0):
-                continue
             target_alt_str = f"c{int(target_alt):02}"
             is_extra_slot = int(target_alt) > 7
             simple_config = (row[5] == "TRUE") and not is_extra_slot # Can use simple config
-            need_model_copy = (not simple_config) and int(curr_alt) <= 7 # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
+            need_model_copy = (not simple_config) and (int(curr_alt) <= 7) and (not copy_no_vanilla_files) # and int(target_alt) <= 7 # If True, then missing model files need to be copied from share slot
             need_share = (not simple_config) and is_extra_slot
             new_char_name = row[6] # Slot Name (may be empty)
             is_new_slot = (row[8] in ["New Character", "Echo Slot"]) # Does character have their own CSS slot?
@@ -212,7 +257,9 @@ def main(argv):
                 if need_model_copy:
                     # only use the first char_id since reslotterGUI already handles characters with multiple IDs
                     suffix = "-" + (''.join(random.choices(string.ascii_lowercase, k=8)))
+                    debug_wait("Before first reslot")
                     reslotterGUI.run_with_func([curr_alt_str], [curr_alt_str], char_names[0], mod_folder, output_dir+suffix, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
+                    debug_wait("Before model copy")
                     if not fighter_hashes:
                         populate_fighter_hashes()
                     for name in char_names:
@@ -222,9 +269,11 @@ def main(argv):
                         for sub_path in fighter_hashes[name]:
                             try:
                                 sub_path_split = sub_path.split("/")
-                                assert sub_path_split[-2] == curr_alt_str
-                                assert sub_path_split[-1] in model_files
-                                # assert sub_path_split[-1] != ""
+                                if copy_all_vanilla_files:
+                                    assert curr_alt_str in sub_path_split
+                                else:
+                                    assert sub_path_split[-2] == curr_alt_str
+                                    assert sub_path_split[-1] in model_files
                             except:
                                 continue
                             # new_sub_path = sub_path.replace(curr_alt_str, target_alt_str)
@@ -240,7 +289,10 @@ def main(argv):
                                 num_copied += 1
                                 # print(f"Copied: {new_model_path}")
                         if num_copied > 0:
-                            print(f"Copied {num_copied} missing model file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
+                            if copy_all_vanilla_files:
+                                print(f"Copied {num_copied} missing file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
+                            else:
+                                print(f"Copied {num_copied} missing model file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
                     if "ptrainer" in char_names:
                         old_num_copied = num_copied
                         for sub_path in fighter_hashes["ptrainer_low"]:
@@ -263,11 +315,14 @@ def main(argv):
                     # copy all-slots effect (one-slot is already handled) and plugin.nro
                     copy_other_files(output_dir+suffix, output_dir, char_names, target_alt_str)
                     # run reslotter a second time; once to prepare for model copying, and once to actually reslot
+                    debug_wait("Before second reslot")
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], output_dir+suffix, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=True)
                 else:
                     # copy all-slots effect (one-slot is already handled) and plugin.nro
                     copy_other_files(mod_folder, output_dir, char_names, target_alt_str)
+                    debug_wait("Before reslot")
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
+                    debug_wait("After reslot")
                 # Check for unexpected slot dependencies
                 if need_share:
                     unexpected_dependencies = set()
