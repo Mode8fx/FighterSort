@@ -1,5 +1,10 @@
-#Original code by BluJay <https://github.com/blu-dev> and Jozz <https://github.com/jozz024/ssbu-skin-reslotter>
-#Modified by Coolsonickirby to get it to work with dir addition
+# Original code by BluJay <https://github.com/blu-dev> and Jozz <https://github.com/jozz024/ssbu-skin-reslotter>
+# Modified by Coolsonickirby to get it to work with dir addition
+# Further modified by CSharpM7 <https://github.com/CSharpM7/reslotter>
+# Even further modified by Mode8fx for automation/integration with FighterSort
+# This modification is based on ReslotterGUI's commit from Nov 14, 2023. The following changes have been made:
+# - In add_missing_files(), the effect file is no longer ignored for vanilla slots
+# - In reslot_fighter_files(), files that are not in fighter, sound, or effect folders are no longer ignored
 import os
 import shutil
 import sys
@@ -81,7 +86,6 @@ def reslot_fighter_files(mod_directory, fighter_files, current_alt, target_alt, 
             if file.startswith(f"fighter/{fighter_name}"):
                 if (not "/"+current_alt+"/" in file):
                     continue
-                
                 lookfor = f"/{current_alt}/"
                 replace = f"/{target_alt}/"
                 new_file = file.replace(lookfor, replace)
@@ -94,7 +98,11 @@ def reslot_fighter_files(mod_directory, fighter_files, current_alt, target_alt, 
                 replace = f"{target_alt.strip('c')}"
                 new_file = file.replace(lookfor, replace)
             else:
-                continue
+                if (not "/"+current_alt+"/" in file):
+                    continue
+                lookfor = f"/{current_alt}/"
+                replace = f"/{target_alt}/"
+                new_file = file.replace(lookfor, replace)
 
             makeDirsFromFile(os.path.join(out_dir, new_file))
             shutil.copy(os.path.join(mod_directory, file), os.path.join(out_dir, new_file))
@@ -129,8 +137,8 @@ def add_missing_files(reslotted_files, fighter_name, target_alt, is_new_slot=Fal
 
     for file in reslotted_files:
         #Don't add oneslot effects to vanilla alts configs
-        if (not is_new_slot and "effect" in file):
-            continue
+        # if (not is_new_slot and "effect" in file):
+        #     continue
         if file not in known_files:
             if file in resulting_config["new-dir-files"][new_dir_info]:
                 continue

@@ -1,3 +1,11 @@
+# Original code by CSharpM7 <https://github.com/CSharpM7/reslotter>
+# Modified by Mode8fx for automation/integration with FighterSort
+# This modification is based on ReslotterGUI's commit from Nov 14, 2023. The following changes have been made:
+# - Commented out nearly all GUI-related code
+# - Commented out all config.ini writing
+# - Commented out many print statements
+# - Slightly reworked some logic for integration with FighterSort
+# (The output should be the same as though you used the original GUI version)
 import os
 import os.path
 from tkinter import *
@@ -30,18 +38,19 @@ defaultConfig['DEFAULT'] = {
     'searchDir' : ""
     }
 def CreateConfig():
-    print("creating valid config")
-    if (os.path.isfile(os.getcwd() + r"\config.ini")):
-        os.remove(os.getcwd() + r"\config.ini")
+#     print("creating valid config")
+#     if (os.path.isfile(os.getcwd() + r"\config.ini")):
+#         os.remove(os.getcwd() + r"\config.ini")
 
-    with open('config.ini', 'w+') as configfile:
-        defaultConfig.write(configfile)
-        config.read('config.ini')
+#     with open('config.ini', 'w+') as configfile:
+#         defaultConfig.write(configfile)
+#         config.read('config.ini')
+    pass
 
 #create a config if necessary
-if (not os.path.isfile(os.getcwd() + r"\config.ini")):
-    CreateConfig()
-config.read('config.ini')
+# if (not os.path.isfile(os.getcwd() + r"\config.ini")):
+#     CreateConfig()
+# config.read('config.ini')
 
 #truncate strings for labels
 def truncate(string,direciton=W,limit=20,ellipsis=True):
@@ -56,7 +65,7 @@ def truncate(string,direciton=W,limit=20,ellipsis=True):
     return text
 
 def Init(args):
-    #Check for hashes_all.txt
+    #Check for Hashes_all.txt
     root.hashes= os.getcwd() +"/Hashes_all.txt"
     if (not os.path.isfile(root.hashes)):
         messagebox.showerror(root.title(),"Hashes_all.txt does not exist in this directory")
@@ -71,12 +80,12 @@ def Init(args):
         else:
             config.set("DEFAULT","searchDir",args[1])
             root.searchDir = args[1]
-            with open('config.ini', 'w+') as configfile:
-                config.write(configfile)
+            # with open('config.ini', 'w+') as configfile:
+            #     config.write(configfile)
             return
 
     if (InitSearch(args)==False):
-        root.destroy(searchDir)
+        # root.destroy(searchDir)
         sys.exit("exited prompt or folder does not exist")
 
 
@@ -140,8 +149,8 @@ def InitSearch(firstLoad=True):
     root.searchDir = searchDir
     #Write new location to config file      
     config.set("DEFAULT","searchDir",root.searchDir)
-    with open('config.ini', 'w+') as configfile:
-        config.write(configfile)
+    # with open('config.ini', 'w+') as configfile:
+    #     config.write(configfile)
 
 def GetSlotsFromFolder(folder):
     foundSlots = []
@@ -695,12 +704,12 @@ def RunReslotter(onlyConfig=False):
     exclude = (root.excludeCheckVariable.get() and not onlyConfig)
     clone = (root.cloneCheckVariable.get() and not onlyConfig)
 
-    if (exclude and not clone):
-        res = messagebox.askquestion(root.title(), "If you want to use the same folder, but exclude all other alts,"
-            "all mod files that are excluded will be deleted! Are you sure you want to do this?"
-            )
-        if res != 'yes':
-            return
+    # if (exclude and not clone):
+    #     res = messagebox.askquestion(root.title(), "If you want to use the same folder, but exclude all other alts,"
+    #         "all mod files that are excluded will be deleted! Are you sure you want to do this?"
+    #         )
+    #     if res != 'yes':
+    #         return
 
     sources=[""]*len(root.UIsources)
     targets=[""]*len(root.UItargets)
@@ -711,7 +720,10 @@ def RunReslotter(onlyConfig=False):
     knownTargets = 0
     #for each potential source, check if the UI exists for it. Then pair them together by source:target
     for i in range(len(root.UIsources)):
-        sourceText = root.UIsources[i]["text"]
+        try:
+            sourceText = root.UIsources[i]["text"]
+        except:
+            sourceText = root.UIsources[i].get()
         sources[i] = sourceText.replace("+","")
 
         sharesText = root.UIshares[i].get()
@@ -756,18 +768,18 @@ def RunReslotter(onlyConfig=False):
         return
 
     #Update config
-    if (root.currentFighter != "all"):
-        with open('config.ini', 'w+') as configfile:
-            config.write(configfile)
+    # if (root.currentFighter != "all"):
+    #     with open('config.ini', 'w+') as configfile:
+    #         config.write(configfile)
 
-    root.withdraw()
-    print(targets)
+    # root.withdraw()
+    # print(targets)
     #set directory to clone everything to, keep it the same, or use a temp folder
-    targetName = " ("+targetName[1:]
-    if (onlyConfig):
-        root.targetDir = root.searchDir
-    else:
-        root.targetDir = root.searchDir+targetName+")" if (clone) else root.searchDir+" (Temp)"
+    # targetName = " ("+targetName[1:]
+    # if (onlyConfig):
+    #     root.targetDir = root.searchDir
+    # else:
+    #     root.targetDir = root.searchDir+targetName+")" if (clone) else root.searchDir+" (Temp)"
 
     #create target directory
     try:
@@ -800,8 +812,8 @@ def ReconfigAll():
 
 
 def RenameUI(targetFolder,fighter_name,newname):
-    print("New CSS name:"+newname)
-    startid = int(root.redirectStartVariable.get())
+    print("New CSS name: "+newname)
+    startid = int(root.new_ui_num.get())
     folders = [targetFolder+"/ui/replace",targetFolder+"/ui/replace_patch"]
     for folder in folders:
         for (dirpath, dirnames, filenames) in os.walk(folder):
@@ -834,12 +846,12 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
     #Warm up the reslotter
     if (os.path.isfile(root.searchDir+"/config.json") and not onlyConfig):
         #At the moment, this program can only append entries, rather than 
-        res = messagebox.askquestion(root.title(), "This mod already has a config.json. Would you like to generate a new one?"
-            "\n(If no, this will add on to the current config, which would increase the config's filesize)"
-            )
-        if (res != "yes" and res != "no"):
-            return
-        reslotter.init(root.hashes,root.searchDir,res == 'yes')
+        # res = messagebox.askquestion(root.title(), "This mod already has a config.json. Would you like to generate a new one?"
+        #     "\n(If no, this will add on to the current config, which would increase the config's filesize)"
+        #     )
+        # if (res != "yes" and res != "no"):
+        #     return
+        reslotter.init(root.hashes,root.searchDir,True)
     else:
         reslotter.init(root.hashes,root.searchDir,onlyConfig)
 
@@ -847,7 +859,7 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
     for fighter in fighters:
         if fighter == "all":
             continue
-        print("Beginning operations for " + fighter)
+        # print("Beginning operations for " + fighter)
         if (root.currentFighter == "all"):
             root.slots=[]
             modelFolder = root.searchDir+"/fighter/"+fighter+"/model"
@@ -885,10 +897,10 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
             outdirCall = "" if (onlyConfig) else root.targetDir
             subcall = ["reslotter.py",root.searchDir,root.hashes,fighter,source,target,share,outdirCall]
 
-            if (onlyConfig):
-                print("Writing config for "+fighter+"'s "+source+" slot")
-            else:
-                print("Changing "+fighter+"'s "+source+" mod to "+target+"...")
+            # if (onlyConfig):
+            #     print("Writing config for "+fighter+"'s "+source+" slot")
+            # else:
+            #     print("Changing "+fighter+"'s "+source+" mod to "+target+"...")
             
             try:
                 reslotter.main(subcall[1],subcall[2],subcall[3],subcall[4],subcall[5],subcall[6],subcall[7])
@@ -898,17 +910,17 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
 
     if succeeded:
 
-        extras = ["info.toml","preview.webp"]
+        # extras = ["info.toml","preview.webp"]
         if (not onlyConfig):
-            for e in extras:
-                eFile = root.searchDir + "/"+e
-                if (os.path.isfile(eFile)):
-                    shutil.copy(eFile,root.targetDir+"/"+e)
+            # for e in extras:
+            #     eFile = root.searchDir + "/"+e
+            #     if (os.path.isfile(eFile)):
+            #         shutil.copy(eFile,root.targetDir+"/"+e)
 
             if (not clone):
                 shutil.rmtree(root.searchDir, ignore_errors=True)
-                os.rename(root.targetDir,root.searchDir)
-                root.targetDir=root.searchDir
+                # os.rename(root.targetDir,root.searchDir)
+                # root.targetDir=root.searchDir
 
         if (root.currentFighter != "all"):
             CreatePRCXML(root.currentFighter,root.targetDir)
@@ -920,18 +932,18 @@ def SubCall(fighters,onlyConfig,sources,targets,shares,exclude,clone):
         with open(newConfigLocation, 'w+', encoding='utf-8') as f:
             json.dump(reslotter.resulting_config, f, ensure_ascii=False, indent=4)
 
-        messagebox.showinfo(root.title(),"Finished!")
-        webbrowser.open(root.targetDir)
-    else:
-        messagebox.showerror(root.title(),"Failed to reslot")
+        # messagebox.showinfo(root.title(),"Finished!")
+        # webbrowser.open(root.targetDir)
+    # else:
+    #     messagebox.showerror(root.title(),"Failed to reslot")
 
-    root.deiconify()
+    # root.deiconify()
     root.UnsavedChanges=False
-    UpdateHeader()
+    # UpdateHeader()
 
 def quit():
-    with open('config.ini', 'w+') as configfile:
-        config.write(configfile)
+    # with open('config.ini', 'w+') as configfile:
+    #     config.write(configfile)
         
     root.destroy()
     sys.exit("user exited")
@@ -941,6 +953,53 @@ def main(args):
     SetFighters()
     CreateMainWindow()
 
+def has_non_empty_values(data):
+    if isinstance(data, dict):
+        return any(has_non_empty_values(value) for value in data.values())
+    if isinstance(data, list):
+        return any(has_non_empty_values(item) for item in data)
+    return True
 
-main(sys.argv)
-root.mainloop()
+def run_with_func(ui_sources, ui_targets, current_fighter, search_dir, target_dir, share=False, new_ui_name="", new_ui_num=0, replace=False):
+    # Prepare Hashes_all.txt
+    root.hashes = os.getcwd() +"/Hashes_all.txt"
+    if (not os.path.isfile(root.hashes)):
+        messagebox.showerror(root.title(),"Hashes_all.txt does not exist in this directory")
+        webbrowser.open("https://github.com/ultimate-research/archive-hashes/blob/master/Hashes_all")
+        root.destroy()
+        sys.exit("no hashes")
+
+    # Prepare variables
+    root.UIsources = [StringVar(value=val) for val in ui_sources]
+    root.UItargets = [StringVar(value=val) for val in ui_targets]
+    if share:
+        root.UIshares = [StringVar(value=f"c{GetAssumedShareSlot(int(val.strip('c')), current_fighter):02}") for val in ui_sources]
+    else:
+        root.UIshares = [StringVar(value="")] * len(ui_sources)
+    root.currentFighter = current_fighter
+    root.searchDir = search_dir
+    root.targetDir = target_dir
+    root.shareCheckVariable = IntVar(value=share)
+    root.excludeCheckVariable = IntVar(value=1)
+    if replace:
+        root.cloneCheckVariable = IntVar(value=0)
+    else:
+        root.cloneCheckVariable = IntVar(value=1)
+    root.comboPRC = StringVar(value="")
+    root.redirectEntryVariable = StringVar(value=new_ui_name)
+    root.new_ui_num = StringVar(value=new_ui_num)
+
+    # Run the reslotter
+    RunReslotter(onlyConfig=False)
+
+    # Delete the resulting config if it is empty (contains no values, disregarding empty dictionaries/lists)
+    configFileLocation = root.targetDir+"/config.json"
+    if os.path.isfile(configFileLocation):
+        with open(configFileLocation, 'r') as file:
+            data = json.load(file)
+        if not has_non_empty_values(data):
+            os.remove(configFileLocation)
+
+if __name__ == "__main__":
+	main(sys.argv)
+	root.mainloop()
