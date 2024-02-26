@@ -1,3 +1,5 @@
+# Run this script from a character directory to generate part of a character page for the spreadsheet.
+
 import os
 import re
 from getpass import getpass

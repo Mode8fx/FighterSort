@@ -255,7 +255,7 @@ Original file by Smash Ultimate Research Group"""
                 new_ui = ""
             if not ui_only:
                 if need_model_copy:
-                    # only use the first char_id since reslotterGUI already handles characters with multiple IDs
+                    # Only use the first char_id since reslotterGUI already handles characters with multiple IDs
                     suffix = "-" + (''.join(random.choices(string.ascii_lowercase, k=8)))
                     debug_wait("Before first reslot")
                     reslotterGUI.run_with_func([curr_alt_str], [curr_alt_str], char_names[0], mod_folder, output_dir+suffix, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
@@ -282,7 +282,7 @@ Original file by Smash Ultimate Research Group"""
                             new_model_dir = path.dirname(new_model_path)
                             old_model_path = path.join(mod_folder, sub_path)
                             old_model_dir = path.dirname(old_model_path) # to get around some model-related issues for new slots, copy the needed model files to the output BEFORE reslotting
-                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot): # and path.isdir(old_model_dir) and model_path_contains_mod(old_model_dir)
+                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot) and path.isdir(old_model_dir): # and model_path_contains_mod(old_model_dir)
                                 original_model_path = path.join(arc_export_dir, sub_path)
                                 os.makedirs(new_model_dir, exist_ok=True)
                                 shutil.copy(original_model_path, new_model_path)
@@ -293,6 +293,7 @@ Original file by Smash Ultimate Research Group"""
                                 print(f"Copied {num_copied} missing file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
                             else:
                                 print(f"Copied {num_copied} missing model file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
+                    # ptrainer might be broken, I haven't tested it in a while
                     if "ptrainer" in char_names:
                         old_num_copied = num_copied
                         for sub_path in fighter_hashes["ptrainer_low"]:
@@ -312,18 +313,18 @@ Original file by Smash Ultimate Research Group"""
                                 num_copied += 1
                         if num_copied > old_num_copied:
                             print(f"Copied missing ptrainer_low from original {curr_alt_str}")
-                    # copy all-slots effect (one-slot is already handled) and plugin.nro
+                    # Ropy all-slots effect (one-slot is already handled) and plugin.nro
                     copy_other_files(output_dir+suffix, output_dir, char_names, target_alt_str)
-                    # run reslotter a second time; once to prepare for model copying, and once to actually reslot
+                    # Run reslotter a second time; once to prepare for model copying, and once to actually reslot
                     debug_wait("Before second reslot")
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], output_dir+suffix, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=True)
                 else:
-                    # copy all-slots effect (one-slot is already handled) and plugin.nro
+                    # Copy all-slots effect (one-slot is already handled) and plugin.nro
                     copy_other_files(mod_folder, output_dir, char_names, target_alt_str)
                     debug_wait("Before reslot")
                     reslotterGUI.run_with_func([curr_alt_str], [target_alt_str], char_names[0], mod_folder, output_dir, share=need_share, new_ui_name=new_ui, new_ui_num=new_ui_num, replace=False)
                     debug_wait("After reslot")
-                # Check for unexpected slot dependencies
+                # Check for unexpected slot dependencies (situations where a mod's config pulls file(s) from slots other than the one it's sharing from)
                 if need_share:
                     unexpected_dependencies = set()
                     assumed_share_slot = f"c{reslotterGUI.GetAssumedShareSlot(int(curr_alt), char_names[0]):02}"
@@ -343,7 +344,7 @@ Original file by Smash Ultimate Research Group"""
                                     for slot in possible_slots:
                                         if f"/{slot}/" in key:
                                             # unexpected_dependencies.add(slot)
-                                            # now we know that this mod may contain an unexpected dependency; we need to check the mod(s) in the other slot to see if they contain the specific files that this mod is dependent on
+                                            # Now we know that this mod may contain an unexpected dependency; we need to check the mod(s) in the other slot to see if they contain the specific files that this mod is dependent on
                                             for other_mod in mods_info_by_target_slot[slot]:
                                                 other_output_dir = other_mod[1]
                                                 if path.isfile(path.join(other_output_dir, key)):
@@ -356,6 +357,7 @@ Original file by Smash Ultimate Research Group"""
                         else:
                             print("    The mod you have in that slot conflicts, so this mod may not work right.")
                         warnings.append((char.name, mod_name, target_alt_str, unexpected_dependencies))
+        # Now generate msg_name.xmsbt and update ui_chara_db.prcxml (or generate it if it doesn't already exist)
         if char.name == "Pokemon Trainer":
             oneslotnamer.run_with_func("ptrainer", 38, True, mods_info, char_folder)
             oneslotnamer.run_with_func("pzenigame", 39, False, mods_info, char_folder)

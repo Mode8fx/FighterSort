@@ -83,17 +83,16 @@ ui_chara_db_prcxml = path.join(root_output_dir, "ui_chara_db", "ui", "param", "d
 ##################
 
 class Character:
-    def __init__(self, name, fighter_names, ui_index, ui_name=None, has_article=False, alt_names=[]):
-        self.name = name
-        self.fighter_names = fighter_names
+    def __init__(self, name, fighter_names, ui_index, ui_name=None, has_article=False):
+        self.name = name # The name of the character; the folder containing mods for the character should use this name, preceded by "[Character] " (e.g. "[Character] Mario")
+        self.fighter_names = fighter_names # The name used internally by the game; in rare situations (e.g. Ice Climbers), a character will use a list of multiple names
         if not isinstance(self.fighter_names, list):
             self.fighter_names = [self.fighter_names]
-        self.ui_index = ui_index
-        self.ui_name = ui_name
+        self.ui_index = ui_index # The character's ui_index, used by ui_chara_db.prcxml
+        self.ui_name = ui_name # The name used in the UI; if not specified, it will default to the first name in fighter_names
         if self.ui_name is None:
             self.ui_name = self.fighter_names[0]
-        self.has_article = has_article
-        self.alt_names = alt_names
+        self.has_article = has_article # Some names in ui_chara_db has a suffix of "_article" applied to them
 
 def get_char_by_index(num):
     for char in chars:
