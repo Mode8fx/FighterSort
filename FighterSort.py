@@ -293,7 +293,6 @@ Original file by Smash Ultimate Research Group"""
                                 print(f"Copied {num_copied} missing file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
                             else:
                                 print(f"Copied {num_copied} missing model file{'s' if num_copied > 1 else ''} from original {curr_alt_str}")
-                    # ptrainer might be broken, I haven't tested it in a while
                     if "ptrainer" in char_names:
                         old_num_copied = num_copied
                         for sub_path in fighter_hashes["ptrainer_low"]:
@@ -306,7 +305,9 @@ Original file by Smash Ultimate Research Group"""
                             new_sub_path = sub_path
                             new_model_path = path.join(output_dir+suffix, new_sub_path)
                             new_model_dir = path.dirname(new_model_path)
-                            if (not path.isfile(new_model_path)):
+                            old_model_path = path.join(mod_folder, sub_path)
+                            old_model_dir = path.dirname(old_model_path)
+                            if (not path.isfile(new_model_path)) and ((new_sub_path in fighter_hashes[name]) or is_extra_slot) and path.isdir(old_model_dir):
                                 original_model_path = path.join(arc_export_dir, sub_path)
                                 os.makedirs(new_model_dir, exist_ok=True)
                                 shutil.copy(original_model_path, new_model_path)
