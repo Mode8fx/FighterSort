@@ -13,6 +13,7 @@ There's some initial setup, but it's well worth it if you have a lot of mods sin
 - Change the slots of all your mods
 - Export specific slots from a multi-slot mod (e.g. if a mod has 8 slots but you only want 3 of them)
 - Handle extra slots above c07
+  - This is currently bugged; sometimes it works fine, sometimes it doesn't. You can use the `-v` flag when running FighterSort to only use vanilla slots and ignore extra, or `-e` to force everything into extra slots.
 - Fix normally-incompatible swaps (e.g. putting a female Inkling mod on a male Inkling slot) by copying the necessary model files from an ArcExplorer export
 - (Re)generate config.json for each mod
 - Issue a warning when a vanilla slot mod conflicts with an extra slot mod
@@ -20,7 +21,7 @@ There's some initial setup, but it's well worth it if you have a lot of mods sin
 - Generate msg_name.xmsbt to add a custom name and/or Boxing Ring title for each mod
 - Edit ui_chara_db.prcxml to change each character's number of slots
 
-### What It Can't Do (for now)
+### What It Can't Do
 
 - Add new CSS character slots (it does not add character slots to the CSS, but it does copy+rename new character mods as needed (this is untested, but I think it should work))
 - Add single-slot victory themes
