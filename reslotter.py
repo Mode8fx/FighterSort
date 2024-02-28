@@ -93,7 +93,7 @@ def reslot_fighter_files(mod_directory, fighter_files, current_alt, target_alt, 
                 lookfor = f"_{current_alt}"
                 replace = f"_{target_alt}"
                 new_file = file.replace(lookfor, replace)
-            elif file.startswith(f"effect/fighter/{fighter_name}"):
+            elif file.startswith(f"effect/fighter/{fighter_name}") or file.startswith(f"append/effect/fighter/{fighter_name}"):
                 if (not current_alt in file):
                     continue
                 lookfor = f"{current_alt.strip('c')}"
