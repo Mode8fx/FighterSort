@@ -4,7 +4,7 @@ FighterSort aims to be a quick and easy way to batch organize character mods for
 
 ## How Does It Work?
 
-Using a combination of Coolsonickirby's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1aaScKKdMVOpkFsszZ-uI_kb3F-kEVy_W5SYR6iWR1I0), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged.
+Using a combination of CSharpM7's [ReslotterGUI](https://github.com/CSharpM7/reslotter), [a spreadsheet that keeps track of your mod info](https://docs.google.com/spreadsheets/d/1aaScKKdMVOpkFsszZ-uI_kb3F-kEVy_W5SYR6iWR1I0), and your own [ArcExplorer](https://github.com/ScanMountGoat/ArcExplorer) export, FighterSort organizes all of your mods for a character, all at once, how you want them to be organized, ready to drag and drop onto your SD card. The output is in a new folder, so the original mods are unchanged.
 
 There's some initial setup, but it's well worth it if you have a lot of mods since everything after this initial setup is automated for you. For more info, see the tutorial below.
 
@@ -96,15 +96,15 @@ The following resources were originally made by other people:
 
 #### reslotter.py
 - Original code by [BluJay](https://github.com/blu-dev) and [Jozz](https://github.com/jozz024/ssbu-skin-reslotter)
-- Modified by [Coolsonickirby](https://github.com/CSharpM7/reslotter) to add support for dir addition for ReslotterGUI
+- Modified by [Coolsonickirby](https://github.com/Coolsonickirby) to add support for dir addition for ReslotterGUI
 - Further modified by Mode8fx for automation/integration with FighterSort
 
 #### reslotterGUI.py
-- Original code by [Coolsonickirby](https://github.com/CSharpM7/reslotter)
+- Original code by [CSharpM7](https://github.com/CSharpM7/reslotter)
 - Modified by Mode8fx for automation/integration with FighterSort
 
 #### dir_info_with_files_trimmed.json
-- Original file by [Coolsonickirby](https://github.com/CSharpM7/reslotter)
+- Original file by [CSharpM7](https://github.com/CSharpM7/reslotter)
 
 #### Hashes.txt
 - Original file by [Smash Ultimate Research Group](https://github.com/ultimate-research/archive-hashes)
